@@ -740,5 +740,316 @@ There are three paths
 (0, 0) -> (1, 0) -> (1, 1) -> (1, 2)
 
 
+Hashing:
+========================================================
+18)2 Sum problem
+------------------------------------------------------
+TC:O(n)		SC:O(n)
+
+//Main logic
+/*void printPairs(int arr[],int arr_size,int sum)
+{
+int i,temp;
+bool binMap[MAX]={0};//Initialize hash map as 0
+for(i=0;i<arr_size;i++)
+{
+	temp=sum-arr[i];
+	if(temp>=0&&binMap[temp]==1)
+		printf("Pair with given sum %d is (%d, %d) \n",sum,arr[i],temp);
+	bitMap[arr[i]]=1;
+}
+}*/
+
+In C++:
+void printPairs(int arr[], int arr_size, int sum) 
+{ 
+    unordered_set<int> s; 
+    for (int i = 0; i < arr_size; i++) { 
+        int temp = sum - arr[i]; 
+  
+        if (s.find(temp) != s.end()) 
+            cout << "Pair with given sum "<< sum << " is ( " << arr[i] << ", " << temp << ")" << endl; 
+  
+        s.insert(arr[i]); 
+    } 
+} 
+
+Input: arr[] = {0, -1, 2, -3, 1}
+        sum = -2
+Output: -3, 1
+If we calculate the sum of the output,
+1 + (-3) = -2
+
+Input: arr[] = {1, -2, 1, 0, 5}
+       sum = 0
+Output: -1
+No valid pair exists.
+
+19)4 Sum problem
+----------------------------------
+TC:O(n^2)	SC:O(n^2)
+
+void findFourElements( 
+    int arr[], int n, int X) 
+{ 
+    // Store sums of all pairs 
+    // in a hash table 
+    unordered_map<int, pair<int, int> > mp; 
+    for (int i = 0; i < n - 1; i++) 
+        for (int j = i + 1; j < n; j++) 
+            mp[arr[i] + arr[j]] = { i, j }; 
+  
+    // Traverse through all pairs and search 
+    // for X - (current pair sum). 
+    for (int i = 0; i < n - 1; i++) { 
+        for (int j = i + 1; j < n; j++) { 
+            int sum = arr[i] + arr[j]; 
+  
+            // If X - sum is present in hash table, 
+            if (mp.find(X - sum) != mp.end()) { 
+  
+                // Making sure that all elements are 
+                // distinct array elements and an element 
+                // is not considered more than once. 
+                pair<int, int> p = mp[X - sum]; 
+                if (p.first != i && p.first != j 
+                    && p.second != i && p.second != j) { 
+                    cout << arr[i] << ", "
+                         << arr[j] << ", "
+                         << arr[p.first] << ", "
+                         << arr[p.second]; 
+                    return; 
+                } 
+            } 
+        } 
+    } 
+} 
+
+Input: array = {10, 2, 3, 4, 5, 9, 7, 8} 
+       X = 23 
+Output: 3 5 7 8
+Sum of output is equal to 23, 
+i.e. 3 + 5 + 7 + 8 = 23.
+
+Input: array = {1, 2, 3, 4, 5, 9, 7, 8}
+       X = 16 
+Output: 1 3 5 7
+Sum of output is equal to 16, 
+i.e. 1 + 3 + 5 + 7 = 16.
+
+20)Longest Consecutive Sequence
+-----------------------------------------------------
+Tc:O(n) 	SC:O(n)
+
+int findLongestConseqSubseq(int arr[], int n) 
+{ 
+    unordered_set<int> S; 
+    int ans = 0; 
+  
+    // Hash all the array elements 
+    for (int i = 0; i < n; i++) 
+        S.insert(arr[i]); 
+  
+    // check each possible sequence from 
+    // the start then update optimal length 
+    for (int i = 0; i < n; i++) { 
+        // if current element is the starting 
+        // element of a sequence 
+        if (S.find(arr[i] - 1) == S.end()) { 
+            // Then check for next elements 
+            // in the sequence 
+            int j = arr[i]; 
+            while (S.find(j) != S.end()) 
+                j++; 
+  
+            // update  optimal length if 
+            // this length is more 
+            ans = max(ans, j - arr[i]); 
+        } 
+    } 
+    return ans; 
+} 
+
+Input: arr[] = {1, 9, 3, 10, 4, 20, 2}
+Output: 4
+Explanation: 
+The subsequence 1, 3, 4, 2 is the longest 
+subsequence of consecutive elements
+/*i.e 1,2,3,4 */
+
+21)Longest Subarray with 0 sum
+-----------------------------------------
+TC:O(n) 	SC:O(n)
+
+int maxLen(int arr[], int n) 
+{ 
+    // Map to store the previous sums 
+    unordered_map<int, int> presum; 
+  
+    int sum = 0; // Initialize the sum of elements 
+    int max_len = 0; // Initialize result 
+  
+    // Traverse through the given array 
+    for (int i = 0; i < n; i++) { 
+        // Add current element to sum 
+        sum += arr[i]; 
+  
+        if (arr[i] == 0 && max_len == 0) 
+            max_len = 1; 
+        if (sum == 0) 
+            max_len = i + 1; 
+  
+        // Look for this sum in Hash table 
+        if (presum.find(sum) != presum.end()) { 
+            // If this sum is seen before, then update max_len 
+            max_len = max(max_len, i - presum[sum]); 
+        } 
+        else { 
+            // Else insert this sum with index in hash table 
+            presum[sum] = i; 
+        } 
+    } 
+  
+    return max_len; 
+} 
+
+Input: arr[] = {15, -2, 2, -8, 1, 7, 10, 23};
+Output: 5
+Explanation: The longest sub-array with 
+elements summing up-to 0 is {-2, 2, -8, 1, 7}
+
+Input: arr[] = {1, 2, 3}
+Output: 0
+Explanation:There is no subarray with 0 sum
+
+22)Longest substring without repeat
+-----------------------------------
+TC:O(n)		SC:O(d) 
+		d is 256;
+
+int lengthOfLongestSubstring(string s) {
+        vector<int> dict(256, -1);
+        int maxLen = 0, start = -1;
+        for (int i = 0; i != s.length(); i++) {
+            if (dict[s[i]] > start)
+                start = dict[s[i]];
+            dict[s[i]] = i;
+            maxLen = max(maxLen, i - start);
+        }
+        return maxLen;
+    }
+
+Example 1:
+
+Input: "abcabcbb"
+Output: 3 
+Explanation: The answer is "abc", with the length of 3. 
+
+Example 2:
+
+Input: "bbbbb"
+Output: 1
+Explanation: The answer is "b", with the length of 1.
+
+Explation of algorithm:
+"dict" is used to keep tracking the char in the input string you read every time. start indicates the position of starting position of the substring. At the beginning, it initializes all value in "dict" to -1. Then in the for loop, it scans every char in the string. If the char in the "dict"'s value is larger than "start", it means it already in the substring. You should change the start position of substring to the repeat position and start a new count. "maxLen" records the maximum length of substring you have so far.
+
+For example, the input is "aba", you check dict[s[0]], which is dict[97] is -1. Therefore, you can change the dict[97] to 0. In this way, you keep recording the string char's position in the dict. When you meet the second "a" in the input, dict[97] is 0 and larger than start, which is -1. Then you change start value to 0. When you apply length function ( i - start), you calculate the new substring length, which didn't contain the substring before the first "a".
+
+23)DO AGAIN******************************************************************************
+
+Count number of subarrays with given XOR
+
+long long subarrayXor(int arr[], int n, int m) 
+{ 
+    long long ans = 0; // Initialize ans 
+  
+    // Pick starting point i of subarrays 
+    for (int i = 0; i < n; i++) { 
+        int xorSum = 0; // Store XOR of current subarray 
+  
+        // Pick ending point j of subarray for each i 
+        for (int j = i; j < n; j++) { 
+            // calculate xorSum 
+            xorSum = xorSum ^ arr[j]; 
+  
+            // If xorSum is equal to given value, 
+            // increase ans by 1. 
+            if (xorSum == m) 
+                ans++; 
+        } 
+    } 
+    return ans; 
+} 
+
+Linked list
+======================================================
+1)Reverse a LinkedList:
+----------------------------------------------
+TC:O(n)		SC:O(1)
+    void reverse() 
+    { 
+        // Initialize current, previous and 
+        // next pointers 
+        Node* current = head; 
+        Node *prev = NULL, *next = NULL; 
+  
+        while (current != NULL) { 
+            // Store next 
+            next = current->next; 
+  
+            // Reverse current node's pointer 
+            current->next = prev; 
+  
+            // Move pointers one position ahead. 
+            prev = current; 
+            current = next; 
+        } 
+        head = prev; 
+    } 
+Example:
+Input:
+2
+6
+1 2 3 4 5 6
+5
+2 7 8 9 10
+Output:
+6 5 4 3 2 1
+10 9 8 7 2
+
+2)Find middle of LinkedList
+-------------------------------------------------
+TC:O(n/2)	SC:O(1)
+void printMiddle(struct Node *head)  
+{  
+    struct Node *slow_ptr = head;  
+    struct Node *fast_ptr = head;  
+  
+    if (head!=NULL)  
+    {  
+        while (fast_ptr != NULL && fast_ptr->next != NULL)  
+        {  
+            fast_ptr = fast_ptr->next->next;  
+            slow_ptr = slow_ptr->next;  
+        }  
+        printf("The middle element is [%d]\n\n", slow_ptr->data);  
+    }  
+}  
+Input:
+2
+5
+1 2 3 4 5
+6
+2 4 6 7 5 1
+
+Output:
+3
+7
+
+
+
+
+
 
 
