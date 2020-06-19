@@ -984,7 +984,7 @@ long long subarrayXor(int arr[], int n, int m)
 
 Linked list
 ======================================================
-1)Reverse a LinkedList:
+24)Reverse a LinkedList:
 ----------------------------------------------
 TC:O(n)		SC:O(1)
     void reverse() 
@@ -1018,7 +1018,7 @@ Output:
 6 5 4 3 2 1
 10 9 8 7 2
 
-2)Find middle of LinkedList
+25)Find middle of LinkedList
 -------------------------------------------------
 TC:O(n/2)	SC:O(1)
 void printMiddle(struct Node *head)  
@@ -1046,8 +1046,519 @@ Input:
 Output:
 3
 7
+26)Merge two sorted Linked List
+-----------------------------------------------
+TC:O(n+m) 	SC:O(1)
+
+node *merge(node *p , node *q , node *sorting)
+{
+	node *head3;
+	
+	if(p == NULL)
+		return q;
+	if(q == NULL)
+		return p;
+	
+	if(p && q)
+	{
+		if(p->data <= q->data)
+		{
+			sorting = p;
+			p = sorting->next;
+		}
+		else
+		{
+			sorting = q;
+			q = sorting->next;
+		}
+		
+	}
+	
+	head3 = sorting;
+	
+	while(p && q)
+	{
+		if(p->data <= q->data)
+		{
+			sorting->next = p;
+			sorting = p;
+			p = sorting->next;
+		}
+		else
+		{
+			sorting->next = q;
+			sorting = q;
+			q = sorting->next;
+		}
+	}
+	
+	if(p==NULL)
+	{
+		sorting->next = q;
+	}
+	
+	if(q==NULL)
+	{
+		sorting->next = p;
+	}
+	
+	return head3;	
+}
 
 
+Input: 1->2->4, 1->3->4
+Output: 1->1->2->3->4->4
+
+
+
+27)Remove N-th node from back of LinkedList
+------------------------------------------------
+TC:O(n)		SC:O(1)
+ Node* deleteNode(int key) 
+    { 
+  
+        // First pointer will point to 
+        // the head of the linked list 
+        Node *first = head; 
+  
+        // Second pointer will poin to the 
+        // Nth node from the beginning 
+        Node *second = head; 
+        for (int i = 0; i < key; i++) 
+        { 
+  
+            // If count of nodes in the given 
+            // linked list is <= N 
+            if (second->next == NULL)  
+            { 
+  
+                // If count = N i.e. 
+                // delete the head node 
+                if (i == key - 1) 
+                    head = head->next; 
+                return head; 
+            } 
+            second = second->next; 
+        } 
+  
+        // Increment both the pointers by one until 
+        // second pointer reaches the end 
+        while (second->next != NULL) 
+        { 
+            first = first->next; 
+            second = second->next; 
+        } 
+  
+        // First must be pointing to the 
+        // Nth node from the end by now 
+        // So, delete the node first is pointing to 
+        first->next = first->next->next; 
+        return head; 
+    } 
+Input: 2 -> 3 -> 1 -> 7 -> NULL, N = 1
+Output:
+Created Linked list is:
+2 3 1 7
+Linked List after Deletion is:
+2 3 1
+
+Input: 1 -> 2 -> 3 -> 4 -> NULL, N = 4
+Output:
+Created Linked list is:
+1 2 3 4
+Linked List after Deletion is:
+2 3 4 
+
+28)Delete a given Node when a node is given.(without head pointer)
+---------------------------------------------
+TC:O(1) 	SC:O(1)
+class Solution {
+public:
+    void deleteNode(ListNode* node) {
+        *node = *(node->next);
+    }
+};
+---------------
+if the node should be freed, we need 3 lines:
+----------------
+class Solution {
+public:
+    void deleteNode(ListNode* node) {
+        ListNode* temp = node->next;
+        *node = *temp;
+        delete temp;
+    }
+};
+
+Input: head = [4,5,1,9], node = 5
+Output: [4,1,9]
+Explanation: You are given the second node with value 5, the linked list should become 4 -> 1 -> 9 after calling your function.
+
+/**/
+m=(m->next) here u just transfer node m to m->next allocation.
+but *m=*(m->next) ,*m pointer assigning the whole block memory of
+*(m->next) pointer.
+
+29)Add two numbers as LinkedList
+----------------------------------------------------
+Tc:O(n+m) 	SC:O(n+m)
+
+Node* addTwoLists(Node* first, Node* second) 
+{ 
+  
+    // res is head node of the resultant list 
+    Node* res = NULL; 
+    Node *temp, *prev = NULL; 
+    int carry = 0, sum; 
+  
+    // while both lists exist 
+    while (first != NULL 
+           || second != NULL) { 
+        // Calculate value of next 
+        // digit in resultant list. 
+        // The next digit is sum of 
+        // following things 
+        // (i) Carry 
+        // (ii) Next digit of first 
+        // list (if there is a next digit) 
+        // (ii) Next digit of second 
+        // list (if there is a next digit) 
+        sum = carry + (first ? first->data : 0) 
+              + (second ? second->data : 0); 
+  
+        // update carry for next calulation 
+        carry = (sum >= 10) ? 1 : 0; 
+  
+        // update sum if it is greater than 10 
+        sum = sum % 10; 
+  
+        // Create a new node with sum as data 
+        temp = newNode(sum); 
+  
+        // if this is the first node then 
+        // set it as head of the resultant list 
+        if (res == NULL) 
+            res = temp; 
+  
+        // If this is not the first 
+        // node then connect it to the rest. 
+        else
+            prev->next = temp; 
+  
+        // Set prev for next insertion 
+        prev = temp; 
+  
+        // Move first and second 
+        // pointers to next nodes 
+        if (first) 
+            first = first->next; 
+        if (second) 
+            second = second->next; 
+    } 
+  
+    if (carry > 0) 
+        temp->next = newNode(carry); 
+  
+    // return head of the resultant list 
+    return res; 
+} 
+
+Input:
+List1: 5->6->3 // represents number 365
+List2: 8->4->2 // represents number 248
+Output:
+Resultant list: 3->1->6 // represents number 613
+Explanation: 365 + 248 = 613
+
+30)Find intersection point of Y LinkedList
+------------------------------------------------
+TC:O(m+n)	SC:O(1)
+
+struct Node* findMergePoint3(struct Node *A, struct Node *B) {
+    int m = length(A);
+    int n = length(B);
+    int d = n - m;
+    if(m > n) {
+        struct Node* temp = A;
+        A = B;
+        B = temp;
+        d = m - n;
+    }
+    int i;
+    for(i=0;i<d;i++) {
+        B = B->next;
+    }
+    while(A != NULL && B != NULL) {
+        if(A == B) {
+            return A;
+        }
+        A = A->next;
+        B = B->next;
+    }
+    return NULL;
+}
+2
+2 3 2
+10 20
+30 40 50
+5 10
+/*
+10->20->5->10
+30->40->50->5->10
+*/
+2 3 2
+10 20
+30 40 50
+10 20
+/*
+10->20->5->10
+30->40->50->5->10
+*/
+Output:
+5
+10
+
+31)Check if a LinkedList is palindrome or not.
+---------------------------------------------
+TC:O(n)		SC:O(1)
+
+bool isPalindrome(struct Node* head) 
+{ 
+    struct Node *slow_ptr = head, *fast_ptr = head; 
+    struct Node *second_half, *prev_of_slow_ptr = head; 
+    struct Node* midnode = NULL; // To handle odd size list 
+    bool res = true; // initialize result 
+  
+    if (head != NULL && head->next != NULL) { 
+        /* Get the middle of the list. Move slow_ptr by 1 
+          and fast_ptrr by 2, slow_ptr will have the middle 
+          node */
+        while (fast_ptr != NULL && fast_ptr->next != NULL) { 
+            fast_ptr = fast_ptr->next->next; 
+  
+            /*We need previous of the slow_ptr for 
+             linked lists  with odd elements */
+            prev_of_slow_ptr = slow_ptr; 
+            slow_ptr = slow_ptr->next; 
+        } 
+  
+        /* fast_ptr would become NULL when there are even elements in list.  
+           And not NULL for odd elements. We need to skip the middle node  
+           for odd case and store it somewhere so that we can restore the 
+           original list*/
+        if (fast_ptr != NULL) { 
+            midnode = slow_ptr; 
+            slow_ptr = slow_ptr->next; 
+        } 
+  
+        // Now reverse the second half and compare it with first half 
+        second_half = slow_ptr; 
+        prev_of_slow_ptr->next = NULL; // NULL terminate first half 
+        reverse(&second_half); // Reverse the second half 
+        res = compareLists(head, second_half); // compare 
+  
+        /* Construct the original list back */
+        reverse(&second_half); // Reverse the second half again 
+  
+        // If there was a mid node (odd size case) which 
+        // was not part of either first half or second half. 
+        if (midnode != NULL) { 
+            prev_of_slow_ptr->next = midnode; 
+            midnode->next = second_half; 
+        } 
+        else
+            prev_of_slow_ptr->next = second_half; 
+    } 
+    return res; 
+} 
+  
+/* Function to reverse the linked list  Note that this 
+    function may change the head */
+void reverse(struct Node** head_ref) 
+{ 
+    struct Node* prev = NULL; 
+    struct Node* current = *head_ref; 
+    struct Node* next; 
+    while (current != NULL) { 
+        next = current->next; 
+        current->next = prev; 
+        prev = current; 
+        current = next; 
+    } 
+    *head_ref = prev; 
+} 
+  
+/* Function to check if two input lists have same data*/
+bool compareLists(struct Node* head1, struct Node* head2) 
+{ 
+    struct Node* temp1 = head1; 
+    struct Node* temp2 = head2; 
+  
+    while (temp1 && temp2) { 
+        if (temp1->data == temp2->data) { 
+            temp1 = temp1->next; 
+            temp2 = temp2->next; 
+        } 
+        else
+            return 0; 
+    } 
+  
+    /* Both are empty reurn 1*/
+    if (temp1 == NULL && temp2 == NULL) 
+        return 1; 
+  
+    /* Will reach here when one is NULL 
+      and other is not */
+    return 0; 
+} 
+
+Input:
+3
+1 2 1
+4
+1 2 3 4
+Output:
+1
+0
+
+32)Reverse a LinkedList in groups
+-------------------------------------
+TC:O(n)		SC:O(1)
+
+
+node *swap_in_a_group(node *start , int k)
+{
+	//swap the linked list in group size = k
+	node *p , *q ,*new_start , *temp;
+	int cnt;
+	p = start;
+	cnt = 0;
+	while(cnt != k-1)    // go to the 'K'th node
+	{
+		if(p->next == NULL)
+			{
+			return start;
+			}
+		p = p->next;
+		cnt++;
+	}
+	
+	new_start = p; //the new start		
+	q = new_start;	
+	while(1)
+	{
+		p = start;
+		temp = q->next;
+		if(temp == NULL)  // if total number of nodes is divisible by K (multiple of K)
+		{
+			reverse(p);
+			return new_start;
+		}
+		
+		q->next = NULL;
+		q = temp;
+		start = temp;
+		
+		cnt = 0;
+		//in the last outside while loop , if remainder is non-zero number of nodes
+		while(cnt != k-1) 
+		{
+			if(temp->next == NULL)
+				{	/*if remaining elements not to be reversed*/
+					reverse(p);	
+					p->next = q;
+					return new_start;
+					/*if remaining elements to be reversed*/
+					/*reverse(p);
+              				  break;
+					*/
+				}		
+			temp = temp->next;
+			cnt++;
+		}
+		
+		reverse(p);
+		p->next = temp;
+		q = temp;
+	}
+
+return new_start;
+}
+Input:
+8
+1 2 2 4 5 6 7 8
+4
+5
+1 2 3 4 5
+3
+
+Output:
+4 2 2 1 8 7 6 5
+3 2 1 5 4
+
+33)Detect a cycle and removing loop
+-------------------------------------
+TC:O(n)		SC:O(1)
+
+void remove(Node* head,Node* f)
+{
+    Node* s=head;
+    while(s!=f)
+    {
+        s=s->next;
+        f=f->next;
+    }
+    
+    /to reach the node before the "Loop node"/
+    while(s->next!=f)
+        s=s->next;
+    
+    s->next=NULL;
+    
+}
+
+void removeTheLoop(Node *head)
+{
+     Node* s=head,*f=head;
+     
+     while(s&&f&&f->next)
+     {
+         f=f->next->next;
+         s=s->next;
+         if(s==f)
+         {
+             remove(head,f);
+             return;
+         }
+     }
+}
+
+Input:
+3
+1 3 4
+2
+4
+1 8 3 4
+0
+Output:
+1
+1
+
+/why floyd works/
+
+Distance traveled by fast pointer = 2 * (Distance traveled 
+                                         by slow pointer)
+
+(m + n*x + k) = 2*(m + n*y + k)
+
+Note that before meeting the point shown above, fast
+was moving at twice speed.
+
+x -->  Number of complete cyclic rounds made by 
+       fast pointer before they meet first time
+
+y -->  Number of complete cyclic rounds made by 
+       slow pointer before they meet first time
 
 
 
