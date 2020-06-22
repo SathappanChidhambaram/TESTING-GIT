@@ -1101,9 +1101,38 @@ node *merge(node *p , node *q , node *sorting)
 	{
 		sorting->next = p;
 	}
-	
+	 	
 	return head3;	
 }
+
+//recurse solution
+TC:O(n+m) 	SC:O(n+m)
+
+Node* SortedMerge(Node* a, Node* b)  
+{  
+    Node* result = NULL;  
+      
+    /* Base cases */
+    if (a == NULL)  
+        return(b);  
+    else if (b == NULL)  
+        return(a);  
+      
+    /* Pick either a or b, and recur */
+    if (a->data <= b->data)  
+    {  
+        result = a;  
+        result->next = SortedMerge(a->next, b);  
+    }  
+    else
+    {  
+        result = b;  
+        result->next = SortedMerge(a, b->next);  
+    }  
+    return(result);  
+}  
+
+
 
 
 Input: 1->2->4, 1->3->4
@@ -1559,6 +1588,864 @@ x -->  Number of complete cyclic rounds made by
 
 y -->  Number of complete cyclic rounds made by 
        slow pointer before they meet first time
+
+
+34)Flattening of a LinkedList
+---------------------------------
+TC:O(n^k)		SC:O(1)
+/*If we take there are ' K ' linked list in right.
+and merging two list takes O(N) time.
+then overall time complexity will be: O(N*K)*/
+
+Node *merge(Node *p , Node *q )
+{
+	Node *head3,*sorting;
+	
+	if(p == NULL)
+		return q;
+	if(q == NULL)
+		return p;
+	
+	if(p && q)
+	{
+		if(p->data <= q->data)
+		{
+			sorting = p;
+			p = sorting->bottom;
+		}
+		else
+		{
+			sorting = q;
+			q = sorting->bottom;
+		}
+		
+	}
+	
+	head3 = sorting;
+	
+	while(p && q)
+	{
+		if(p->data <= q->data)
+		{
+			sorting->bottom = p;
+			sorting = p;
+			p = sorting->bottom;
+		}
+		else
+		{
+			sorting->bottom = q;
+			sorting = q;
+			q = sorting->bottom;
+		}
+	}
+	
+	if(p==NULL)
+	{
+		sorting->bottom = q;
+	}
+	
+	if(q==NULL)
+	{
+		sorting->bottom = p;
+	}
+	
+	return head3;	
+}
+
+Node *flatten(Node *root)
+{
+    if(root==NULL || root->next==NULL)
+    return root;
+    
+    return merge(root,flatten(root->next));
+    
+}
+
+Input:
+       5 -> 10 -> 19 -> 28
+       |    |     |     |
+       V    V     V     V
+       7    20    22    35
+       |          |     |
+       V          V     V
+       8          50    40
+       |                |
+       V                V
+       30               45
+
+Output:
+ 5->7->8->10->19->20->22->28->30->35->40->45->50.
+
+35)Rotate a LinkedList
+-------------------------------------
+TC:O(n)		SC:O(1)
+
+
+Node* temp = head;
+while(temp->next){
+temp = temp->next;
+}
+temp->next = head; // linking last node with first node
+Node *end;
+while(k--){
+end = head;
+head = head->next;
+}
+// end is previous of updated head, so make end of next as null as it is the last node of updated linked list
+end->next = NULL;
+return head;
+
+Input:
+2
+8
+1 2 3 4 5 6 7 8
+4
+5
+2 4 7 8 9
+3
+Output:
+5 6 7 8 1 2 3 4
+8 9 2 4 7
+
+36)Clone a Linked List with random and next pointer.
+------------------------------------------------------
+TC:O(n)		SC:O(1)
+
+Node* clone(Node *start) 
+{ 
+    Node* curr = start, *temp; 
+  
+    // insert additional node after 
+    // every node of original list 
+    while (curr) 
+    { 
+        temp = curr->next; 
+  
+        // Inserting node 
+        curr->next = new Node(curr->data); 
+        curr->next->next = temp; 
+        curr = temp; 
+    } 
+  
+    curr = start; 
+  
+    // adjust the random pointers of the 
+    // newly added nodes 
+    while (curr) 
+    { 
+        if(curr->next) 
+            curr->next->random = curr->random ?  
+                                 curr->random->next : curr->random; //when the random pointer points to nullptr. so here you should add a condition if(curr->random!=NULL).
+  
+        // move to the next newly added node by 
+        // skipping an original node 
+        curr = curr->next?curr->next->next:curr->next; 
+    } 
+  
+    Node* original = start, *copy = start->next; 
+  
+    // save the start of copied linked list 
+    temp = copy; 
+  
+    // now separate the original list and copied list 
+    while (original && copy) 
+    { 
+        original->next = 
+         original->next? original->next->next : original->next; 
+  
+        copy->next = copy->next?copy->next->next:copy->next; 
+        original = original->next; 
+        copy = copy->next; 
+    } 
+  
+    return temp; 
+} 
+
+Two pointer
+====================================================================
+37)Merge two sorted LinkedLists
+------------------------------------------------
+solved above- question 26
+
+38)Find the starting point of the loop.
+-------------------------------------------------
+TC:O(n) 	SC:O(1)
+
+
+int detectLoop(Node* list) 
+{ 
+    Node *slow_p = list, *fast_p = list; 
+  
+    while (slow_p && fast_p && fast_p->next) { 
+        slow_p = slow_p->next; 
+        fast_p = fast_p->next->next; 
+        if (slow_p == fast_p) { 
+            return 1; 
+        } 
+    } 
+    return 0; 
+} 
+
+39)3 sum
+-----------------------------------------------
+TC:O(n^2)	SC:O(1)
+
+bool find3Numbers(int A[], int arr_size, int sum) 
+{ 
+    int l, r; 
+  
+    /* Sort the elements */
+    sort(A, A + arr_size); 
+  
+    /* Now fix the first element one by one and find the 
+       other two elements */
+    for (int i = 0; i < arr_size - 2; i++) { 
+  
+        // To find the other two elements, start two index 
+        // variables from two corners of the array and move 
+        // them toward each other 
+        l = i + 1; // index of the first element in the 
+        // remaining elements 
+  
+        r = arr_size - 1; // index of the last element 
+        while (l < r) { 
+            if (A[i] + A[l] + A[r] == sum) { 
+                printf("Triplet is %d, %d, %d", A[i], 
+                       A[l], A[r]); 
+                return true; 
+            } 
+            else if (A[i] + A[l] + A[r] < sum) 
+                l++; 
+            else // A[i] + A[l] + A[r] > sum 
+                r--; 
+        } 
+    } 
+  
+    // If we reach here, then no triplet was found 
+    return false; 
+} 
+
+Input: array = {12, 3, 4, 1, 6, 9}, sum = 24;
+Output: 12, 3, 9
+Explanation: There is a triplet (12, 3 and 9) present
+in the array whose sum is 24. 
+
+Input: array = {1, 2, 3, 4, 5}, sum = 9
+Output: 5, 3, 1
+Explanation: There is a triplet (5, 3 and 1) present 
+in the array whose sum is 9. 
+
+40)Trapping rainwater
+------------------------------------------------
+TC:O(n)		SC:O(1)
+int findWater(int arr[], int n) 
+{ 
+    // initialize output 
+    int result = 0; 
+  
+    // maximum element on left and right 
+    int left_max = 0, right_max = 0; 
+  
+    // indices to traverse the array 
+    int lo = 0, hi = n - 1; 
+  
+    while (lo <= hi) { 
+        if (arr[lo] < arr[hi]) { 
+            if (arr[lo] > left_max) 
+                // update max in left 
+                left_max = arr[lo]; 
+            else
+                // water on curr element = max - curr 
+                result += left_max - arr[lo]; 
+            lo++; 
+        } 
+        else { 
+            if (arr[hi] > right_max) 
+                // update right maximum 
+                right_max = arr[hi]; 
+            else
+                result += right_max - arr[hi]; 
+            hi--; 
+        } 
+    } 
+  
+    return result; 
+} 
+
+Input: arr[]   = {3, 0, 2, 0, 4}
+Output: 7
+We can trap "3 units" of water between 3 and 2,
+"1 unit" on top of bar 2 and "3 units" between 2 
+and 4.  
+
+Input: arr[] = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]
+Output: 6
+
+Trap "1 unit" between first 1 and 2, "4 units" between
+first 2 and 3 and "1 unit" between second last 1 and last 2 
+
+42)Remove Duplicate from Sorted array
+--------------------------------------------------------
+TC:O(n)		SC:O(1)
+
+int removeDuplicates(int arr[], int n) 
+{ 
+    if (n==0 || n==1) 
+        return n; 
+  
+    // To store index of next unique element 
+    int j = 0; 
+  
+    // Doing same as done in Method 1 
+    // Just maintaining another updated index i.e. j 
+    for (int i=0; i < n-1; i++) 
+        if (arr[i] != arr[i+1]) 
+            arr[j++] = arr[i]; 
+  
+    arr[j++] = arr[n-1]; 
+  
+    return j; 
+} 
+  
+// Driver code 
+int main() 
+{ 
+    int arr[] = {1, 2, 2, 3, 4, 4, 4, 5, 5}; 
+    int n = sizeof(arr) / sizeof(arr[0]); 
+  
+    // removeDuplicates() returns new size of 
+    // array. 
+    n = removeDuplicates(arr, n); 
+  
+    // Print updated array 
+    for (int i=0; i<n; i++) 
+        cout << arr[i] << " "; 
+  
+    return 0; 
+} 
+
+Input  : arr[] = {2, 2, 2, 2, 2}
+Output : arr[] = {2}
+         new size = 1
+
+Input  : arr[] = {1, 2, 2, 3, 4, 4, 4, 5, 5}
+Output : arr[] = {1, 2, 3, 4, 5}
+         new size = 5
+
+43)Max continuous number of 1’s
+-----------------------------------------------------------
+TC:O(n)		SC:O(1)
+
+int getMaxLength(bool arr[], int n) 
+{ 
+    int count = 0; //intitialize count 
+    int result = 0; //initialize max 
+  
+    for (int i = 0; i < n; i++) 
+    { 
+        // Reset count when 0 is found 
+        if (arr[i] == 0) 
+            count = 0; 
+  
+        // If 1 is found, increment count 
+        // and update result if count becomes 
+        // more. 
+        else
+        { 
+            count++;//increase count 
+            result = max(result, count); 
+        } 
+    } 
+  
+    return result; 
+} 
+ int getMaxLength(bool arr[], int n) 
+{ 
+    int count = 0; //intitialize count 
+    int result = 0; //initialize max 
+  
+    for (int i = 0; i < n; i++) 
+    { 
+        // Reset count when 0 is found 
+        if (arr[i] == 0) 
+            count = 0; 
+  
+        // If 1 is found, increment count 
+        // and update result if count becomes 
+        // more. 
+        else
+        { 
+            count++;//increase count 
+            result = max(result, count); 
+        } 
+    } 
+  
+    return result; 
+} 
+
+Input  : arr[] = {1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1}
+Output : 4
+
+Input  : arr[] = {0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}
+Output : 1
+
+GREEDY 
+=================================================
+44)N meeting in one room
+---------------------------------------------------
+TC:O(nlogn) 	
+
+
+    #include <bits/stdc++.h>
+    using namespace std;
+     
+    struct Activity{
+        int start, finish, index;
+    };
+     
+    bool activityCompare(Activity s1, Activity s2)
+    {
+        return s1.finish < s2.finish;
+    }
+     
+    int main() {
+    	int t,n,i,j;
+    	cin>>t;
+    	while(t--)
+    	{
+    	    cin>>n;
+    	    Activity arr[n];
+    	    for(i=0;i<n;i++)
+    	    {
+    	        cin>>arr[i].start;
+    	        arr[i].index = i;
+    	    }
+     
+    	    for(i=0;i<n;i++)
+    	    cin>>arr[i].finish;
+    	    sort(arr,arr+n,activityCompare);
+     
+    	    i = 0;
+            cout << arr[i].index+1 << " ";
+            for (int j = 1; j < n; j++)
+            {
+              if (arr[j].start >= arr[i].finish)
+              {
+                  cout << arr[j].index+1<<" ";
+                  i = j;
+              }
+            }
+            cout<<endl;
+    	}
+    	return 0;
+    }
+
+Input:
+6
+1 3 0 5 8 5/*starting time*/
+2 4 6 7 9 9/*Finishing time*/
+output:
+1 2 4 5 /*index in which meeting will be held*/
+
+45)Activity Selection
+---------------------------------------------------
+TC:O(nlogn) 
+
+// C++ program for activity selection problem 
+// when input activities may not be sorted. 
+#include <bits/stdc++.h> 
+using namespace std; 
+
+// A job has a start time, finish time and profit. 
+struct Activitiy 
+{ 
+	int start, finish; 
+}; 
+
+// A utility function that is used for sorting 
+// activities according to finish time 
+bool activityCompare(Activitiy s1, Activitiy s2) 
+{ 
+	return (s1.finish < s2.finish); 
+} 
+
+// Returns count of the maximum set of activities that can 
+// be done by a single person, one at a time. 
+void printMaxActivities(Activitiy arr[], int n) 
+{ 
+	// Sort jobs according to finish time 
+	sort(arr, arr+n, activityCompare); 
+
+	cout << "Following activities are selected n"; 
+
+	// The first activity always gets selected 
+	int i = 0; 
+	cout << "(" << arr[i].start << ", " << arr[i].finish << "), "; 
+
+	// Consider rest of the activities 
+	for (int j = 1; j < n; j++) 
+	{ 
+	// If this activity has start time greater than or 
+	// equal to the finish time of previously selected 
+	// activity, then select it 
+	if (arr[j].start >= arr[i].finish) 
+	{ 
+		cout << "(" << arr[j].start << ", "
+			<< arr[j].finish << "), "; 
+		i = j; 
+	} 
+	} 
+} 
+
+// Driver program 
+int main() 
+{ 
+	Activitiy arr[] = {{5, 9}, {1, 2}, {3, 4}, {0, 6}, {5, 7}, {8, 9}}; 
+	int n = sizeof(arr)/sizeof(arr[0]); 
+	printMaxActivities(arr, n); 
+	return 0; 
+} 
+Input:
+{5, 9}, {1, 2}, {3, 4}, {0, 6}, {5, 7}, {8, 9}
+Output:
+Following activities are selected 
+(1, 2), (3, 4), (5, 7), (8, 9), 
+
+46)Greedy algorithm to find minimum number of coins
+--------------------------------------
+TC:O(N*logN).		SC:O(1)
+void findMin(int V) 
+{ 
+    sort(deno, deno + n); 
+  
+    // Initialize result 
+    vector<int> ans; 
+  
+    // Traverse through all denomination 
+    for (int i = n - 1; i >= 0; i--) { 
+  
+        // Find denominations 
+        while (V >= deno[i]) { 
+            V -= deno[i]; 
+            ans.push_back(deno[i]); 
+        } 
+    } 
+  
+    // Print result 
+    for (int i = 0; i < ans.size(); i++) 
+        cout << ans[i] << " "; 
+} 
+
+Following is minimal number of change 
+for 93: 50  20  20  2  1
+
+47)Fractional Knapsack Problem
+-------------------------------------------------
+TC:O(nlogn)
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+typedef struct {
+   int v;
+   int w;
+   float d;
+} Item;
+void input(Item items[],int sizeOfItems) {
+   cout << "Enter total "<< sizeOfItems <<" item's values and weight" <<
+   endl;
+   for(int I = 0; I < sizeOfItems; i++) {
+      cout << "Enter "<< i+1 << " V ";
+      cin >> items[i].v;
+      cout << "Enter "<< i+1 << " W";
+      cin >> items[i].w;
+   }
+}
+void display(Item items[], int sizeOfItems) {
+   int i;
+   cout << "values: ";
+   for(i = 0; i < sizeOfItems; i++) {
+      cout << items[i].v << "\t";
+   }
+   cout << endl << "weight: ";
+   for (I = 0; I < sizeOfItems; i++) {
+      cout << items[i].w << "\t";
+   }
+   cout << endl;
+}
+bool compare(Item i1, Item i2) {
+   return (i1.d > i2.d);
+}
+float knapsack(Item items[], int sizeOfItems, int W) {
+   int i, j, pos;
+   Item mx, temp;
+   float totalValue = 0, totalWeight = 0;
+   for (i = 0; i < sizeOfItems; i++) {
+      items[i].d = items[i].v / items[i].w;
+   }
+   sort(items, items+sizeOfItems, compare);
+   for(i=0; i<sizeOfItems; i++) {
+      if(totalWeight + items[i].w<= W) {
+         totalValue += items[i].v ;
+         totalWeight += items[i].w;
+      } else {
+         int wt = W-totalWeight;
+         totalValue += (wt * items[i].d);
+         totalWeight += wt;
+         break;
+      }
+   }
+   cout << "total weight in bag " << totalWeight<<endl;
+   return totalValue;
+}
+int main() {
+   int W;
+   Item items[4];
+   input(items, 4);
+   cout << "Entered data \n";
+   display(items,4);
+   cout<< "Enter Knapsack weight \n";
+   cin >> W;
+   float mxVal = knapsack(items, 4, W);
+   cout << "Max value for "<< W <<" weight is "<< mxVal;
+}
+
+output:
+Enter total 4 item's values and weight
+Enter 1 V 50
+Enter 1 W 10
+Enter 2 V 60
+Enter 2 W 20
+Enter 3 V 70
+Enter 3 W 30
+Enter 4 V 70
+Enter 4 W 40
+Entered data
+values: 50 60 70 70
+weight: 10 20 30 40
+Enter Knapsack weight
+60
+total weight in bag 60
+Max value for 60 weight is 180
+
+
+48)Minimum number of platforms required for a railway
+------------------------------------------------
+TC:O(nLogn)	SC:O(1)
+
+// Program to find minimum number of platforms 
+// required on a railway station 
+#include <algorithm> 
+#include <iostream> 
+
+using namespace std; 
+
+// Returns minimum number of platforms reqquired 
+int findPlatform(int arr[], int dep[], int n) 
+{ 
+	// Sort arrival and departure arrays 
+	sort(arr, arr + n); 
+	sort(dep, dep + n); 
+
+	// plat_needed indicates number of platforms 
+	// needed at a time 
+	int plat_needed = 1, result = 1; 
+	int i = 1, j = 0; 
+
+	// Similar to merge in merge sort to process 
+	// all events in sorted order 
+	while (i < n && j < n) { 
+
+		// If next event in sorted order is arrival, 
+		// increment count of platforms needed 
+		if (arr[i] <= dep[j]) { 
+			plat_needed++; 
+			i++; 
+		} 
+
+		// Else decrement count of platforms needed 
+		else if (arr[i] > dep[j]) { 
+			plat_needed--; 
+			j++; 
+		} 
+
+		// Update result if needed 
+		if (plat_needed > result) 
+			result = plat_needed; 
+	} 
+
+	return result; 
+} 
+
+// Driver program to test methods of graph class 
+int main() 
+{ 
+	int arr[] = { 900, 940, 950, 1100, 1500, 1800 }; 
+	int dep[] = { 910, 1200, 1120, 1130, 1900, 2000 }; 
+	int n = sizeof(arr) / sizeof(arr[0]); 
+	cout << "Minimum Number of Platforms Required = "
+		<< findPlatform(arr, dep, n); 
+	return 0; 
+} 
+
+output:Minimum Number of Platforms Required = 3
+
+49)Job sequencing Problem
+--------------------------------------------------
+Time complexity:O(n^2)
+
+// Program to find the maximum profit job sequence from a given array 
+// of jobs with deadlines and profits 
+#include<iostream> 
+#include<algorithm> 
+using namespace std; 
+
+// A structure to represent a job 
+struct Job 
+{ 
+char id;	 // Job Id 
+int dead; // Deadline of job 
+int profit; // Profit if job is over before or on deadline 
+}; 
+
+// This function is used for sorting all jobs according to profit 
+bool comparison(Job a, Job b) 
+{ 
+	return (a.profit > b.profit); 
+} 
+
+// Returns minimum number of platforms reqquired 
+void printJobScheduling(Job arr[], int n) 
+{ 
+	// Sort all jobs according to decreasing order of prfit 
+	sort(arr, arr+n, comparison); 
+
+	int result[n]; // To store result (Sequence of jobs) 
+	bool slot[n]; // To keep track of free time slots 
+
+	// Initialize all slots to be free 
+	for (int i=0; i<n; i++) 
+		slot[i] = false; 
+
+	// Iterate through all given jobs 
+	for (int i=0; i<n; i++) 
+	{ 
+	// Find a free slot for this job (Note that we start 
+	// from the last possible slot) 
+	for (int j=min(n, arr[i].dead)-1; j>=0; j--) 
+	{ 
+		// Free slot found 
+		if (slot[j]==false) 
+		{ 
+			result[j] = i; // Add this job to result 
+			slot[j] = true; // Make this slot occupied 
+			break; 
+		} 
+	} 
+	} 
+
+	// Print the result 
+	for (int i=0; i<n; i++) 
+	if (slot[i]) 
+		cout << arr[result[i]].id << " "; 
+} 
+
+// Driver program to test methods 
+int main() 
+{ 
+	Job arr[] = { {'a', 2, 100}, {'b', 1, 19}, {'c', 2, 27}, 
+				{'d', 1, 25}, {'e', 3, 15}}; 
+	int n = sizeof(arr)/sizeof(arr[0]); 
+	cout << "Following is maximum profit sequence of jobsn"; 
+	printJobScheduling(arr, n); 
+	return 0; 
+} 
+
+Following is maximum profit sequence of jobs
+c a e
+
+
+Backtracking
+=========================================================
+50)N queens Problem
+--------------------------------------------------------
+#include<iostream>
+#include<bits/stdc++.h>
+#include<vector>
+#include<algorithm>
+using namespace std;
+bool isSafe(int row,int col,bool board[][10],int n){
+    for(int i=0;i<col;i++){
+        if(board[row][i]==true)
+        return false;
+    }
+    for(int i=row,j=col;i>=0&&j>=0;i--,j--){
+        if(board[i][j]==true)
+        return false;
+    }
+    for(int i=row,j=col;j>=0 && i<n;i++,j--){
+        if(board[i][j]==true)
+        return false;
+    }
+    return true;
+}
+void helper(int col,int n,vector<int>v,bool board[][10]){
+    if(col==n)
+    return;
+    for(int i=0;i<n;i++){
+        if(isSafe(i,col,board,n)==true){
+            v.push_back(i+1);
+            board[i][col]=true;
+            helper(col+1,n,v,board);
+            if(v.size()==n){
+                printf("[");
+                for(auto x:v)
+                printf("%d ",x);
+                printf("] ");
+            }
+            board[i][col]=false;
+            v.pop_back();
+        }
+    }
+}
+void nQueens(int n){
+    vector<int> v;
+    bool board[10][10];
+    for(int i=0;i<10;i++)
+    for(int j=0;j<10;j++)
+    board[i][j]=false;
+    helper(0,n,v,board);
+    printf("\n");
+}
+
+int main()
+ {
+    int t;
+    scanf("%d",&t);
+    while(t--){
+        int n;
+        scanf("%d",&n);
+        if(n==1)
+        printf("[1 ]\n");
+        else if(n==2 || n==3)
+        printf("-1\n");
+        else
+        nQueens(n);
+	}
+	return 0;
+}
+
+input:
+1
+4
+Output:
+[1 ]
+[2 4 1 3 ] [3 1 4 2 ]
+
+
+
+
+  
+
 
 
 
