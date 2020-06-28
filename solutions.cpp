@@ -1145,7 +1145,6 @@ Output: 1->1->2->3->4->4
 TC:O(n)		SC:O(1)
  Node* deleteNode(int key) 
     { 
-  
         // First pointer will point to 
         // the head of the linked list 
         Node *first = head; 
@@ -2417,13 +2416,1571 @@ Output:
 [1 ]
 [2 4 1 3 ] [3 1 4 2 ]
 
+51)Sudoko
+------------------------------------
+TC: O(9^(n*n)).		SC: O(n*n)
+
+// A Backtracking program in 
+// C++ to solve Sudoku problem 
+#include <bits/stdc++.h> 
+using namespace std; 
+
+// UNASSIGNED is used for empty 
+// cells in sudoku grid 
+#define UNASSIGNED 0 
+
+// N is used for the size of Sudoku grid. 
+// Size will be NxN 
+#define N 9 
+
+// This function finds an entry in grid 
+// that is still unassigned 
+bool FindUnassignedLocation(int grid[N][N], int& row, int& col); 
+
+// Checks whether it will be legal 
+// to assign num to the given row, col 
+bool isSafe(int grid[N][N], int row, int col, int num); 
+
+/* Takes a partially filled-in grid and attempts 
+to assign values to all unassigned locations in 
+such a way to meet the requirements for 
+Sudoku solution (non-duplication across rows, 
+columns, and boxes) */
+bool SolveSudoku(int grid[N][N]) 
+{ 
+	int row, col; 
+
+	// If there is no unassigned location, 
+	// we are done 
+	if (!FindUnassignedLocation(grid, row, col)) 
+		// success! 
+		return true; 
+
+	// Consider digits 1 to 9 
+	for (int num = 1; num <= 9; num++) { 
+		// if looks promising 
+		if (isSafe(grid, row, col, num)) { 
+			// make tentative assignment 
+			grid[row][col] = num; 
+
+			// return, if success, yay! 
+			if (SolveSudoku(grid)) 
+				return true; 
+
+			// failure, unmake & try again 
+			grid[row][col] = UNASSIGNED; 
+		} 
+	} 
+	// this triggers backtracking 
+	return false; 
+} 
+
+/* Searches the grid to find an entry that is 
+still unassigned. If found, the reference 
+parameters row, col will be set the location 
+that is unassigned, and true is returned. 
+If no unassigned entries remain, false is returned. */
+bool FindUnassignedLocation(int grid[N][N], int& row, int& col) 
+{ 
+	for (row = 0; row < N; row++) 
+		for (col = 0; col < N; col++) 
+			if (grid[row][col] == UNASSIGNED) 
+				return true; 
+	return false; 
+} 
+
+/* Returns a boolean which indicates whether 
+an assigned entry in the specified row matches 
+the given number. */
+bool UsedInRow(int grid[N][N], int row, int num) 
+{ 
+	for (int col = 0; col < N; col++) 
+		if (grid[row][col] == num) 
+			return true; 
+	return false; 
+} 
+
+/* Returns a boolean which indicates whether 
+an assigned entry in the specified column 
+matches the given number. */
+bool UsedInCol(int grid[N][N], int col, int num) 
+{ 
+	for (int row = 0; row < N; row++) 
+		if (grid[row][col] == num) 
+			return true; 
+	return false; 
+} 
+
+/* Returns a boolean which indicates whether 
+an assigned entry within the specified 3x3 box 
+matches the given number. */
+bool UsedInBox(int grid[N][N], int boxStartRow, 
+			int boxStartCol, int num) 
+{ 
+	for (int row = 0; row < 3; row++) 
+		for (int col = 0; col < 3; col++) 
+			if (grid[row + boxStartRow] 
+					[col + boxStartCol] 
+				== num) 
+				return true; 
+	return false; 
+} 
+
+/* Returns a boolean which indicates whether 
+it will be legal to assign num to the given 
+row, col location. */
+bool isSafe(int grid[N][N], int row, 
+			int col, int num) 
+{ 
+	/* Check if 'num' is not already placed in 
+	current row, current column and current 3x3 box */
+	return !UsedInRow(grid, row, num) 
+		&& !UsedInCol(grid, col, num) 
+		&& !UsedInBox(grid, row - row % 3, 
+						col - col % 3, num) 
+		&& grid[row][col] == UNASSIGNED; 
+} 
+
+/* A utility function to print grid */
+void printGrid(int grid[N][N]) 
+{ 
+	for (int row = 0; row < N; row++) { 
+		for (int col = 0; col < N; col++) 
+			cout << grid[row][col] << " "; 
+		cout << endl; 
+	} 
+} 
+
+// Driver Code 
+int main() 
+{ 
+	// 0 means unassigned cells 
+	int grid[N][N] =     	      {	{ 3, 0, 6, 5, 0, 8, 4, 0, 0 }, 
+					{ 5, 2, 0, 0, 0, 0, 0, 0, 0 }, 
+					{ 0, 8, 7, 0, 0, 0, 0, 3, 1 }, 
+					{ 0, 0, 3, 0, 1, 0, 0, 8, 0 }, 
+					{ 9, 0, 0, 8, 6, 3, 0, 0, 5 }, 
+					{ 0, 5, 0, 0, 9, 0, 6, 0, 0 }, 
+					{ 1, 3, 0, 0, 0, 0, 2, 5, 0 }, 
+					{ 0, 0, 0, 0, 0, 0, 0, 7, 4 }, 
+					{ 0, 0, 5, 2, 0, 6, 3, 0, 0 } }; 
+	if (SolveSudoku(grid) == true) 
+		printGrid(grid); 
+	else
+		cout << "No solution exists"; 
+
+	return 0; 
+} 
+
+// This is code is contributed by rathbhupendra 
+output:
+3 1 6 5 7 8 4 9 2 
+5 2 9 1 3 4 7 6 8 
+4 8 7 6 2 9 5 3 1 
+2 6 3 4 1 5 9 8 7 
+9 7 4 8 6 3 1 2 5 
+8 5 1 7 9 2 6 4 3 
+1 3 8 9 4 7 2 5 6 
+6 9 2 3 5 1 8 7 4 
+7 4 5 2 8 6 3 1 9 
+
+
+52)M coloring Problem
+-------------------------------------------------------
+TC: O(m^V)	SC:O(V) 
+
+
+#include <stdbool.h> 
+#include <stdio.h> 
+
+// Number of vertices in the graph 
+#define V 4 
+
+void printSolution(int color[]); 
+
+/* A utility function to check if 
+the current color assignment 
+is safe for vertex v i.e. checks 
+whether the edge exists or not 
+(i.e, graph[v][i]==1). If exist 
+then checks whether the color to 
+be filled in the new vertex(c is 
+sent in the parameter) is already 
+used by its adjacent 
+vertices(i-->adj vertices) or 
+not (i.e, color[i]==c) */
+bool isSafe( int v, bool graph[V][V], int color[], int c) 
+{ 
+	for (int i = 0; i < V; i++) 
+		if ( 
+			graph[v][i] && c == color[i]) 
+			return false; 
+	return true; 
+} 
+
+/* A recursive utility function 
+to solve m coloring problem */
+bool graphColoringUtil( 
+	bool graph[V][V], int m, 
+	int color[], int v) 
+{ 
+	/* base case: If all vertices are 
+	assigned a color then return true */
+	if (v == V) 
+		return true; 
+
+	/* Consider this vertex v and 
+	try different colors */
+	for (int c = 1; c <= m; c++) { 
+		/* Check if assignment of color 
+		c to v is fine*/
+		if (isSafe( 
+				v, graph, color, c)) { 
+			color[v] = c; 
+
+			/* recur to assign colors to 
+			rest of the vertices */
+			if ( 
+				graphColoringUtil( 
+					graph, m, color, v + 1) 
+				== true) 
+				return true; 
+
+			/* If assigning color c doesn't 
+			lead to a solution then remove it */
+			color[v] = 0; 
+		} 
+	} 
+
+	/* If no color can be assigned to 
+	this vertex then return false */
+	return false; 
+} 
+
+/* This function solves the m Coloring 
+problem using Backtracking. It mainly 
+uses graphColoringUtil() to solve the 
+problem. It returns false if the m 
+colors cannot be assigned, otherwise 
+return true and prints assignments of 
+colors to all vertices. Please note 
+that there may be more than one solutions, 
+this function prints one of the 
+feasible solutions.*/
+bool graphColoring( 
+	bool graph[V][V], int m) 
+{ 
+	// Initialize all color values as 0. 
+	// This initialization is needed 
+	// correct functioning of isSafe() 
+	int color[V]; 
+	for (int i = 0; i < V; i++) 
+		color[i] = 0; 
+
+	// Call graphColoringUtil() for vertex 0 
+	if ( 
+		graphColoringUtil( 
+			graph, m, color, 0) 
+		== false) { 
+		printf("Solution does not exist"); 
+		return false; 
+	} 
+
+	// Print the solution 
+	printSolution(color); 
+	return true; 
+} 
+
+/* A utility function to print solution */
+void printSolution(int color[]) 
+{ 
+	printf( 
+		"Solution Exists:"
+		" Following are the assigned colors \n"); 
+	for (int i = 0; i < V; i++) 
+		printf(" %d ", color[i]); 
+	printf("\n"); 
+} 
+
+// driver program to test above function 
+int main() 
+{ 
+	/* Create following graph and test 
+	whether it is 3 colorable 
+       (3)---(2) 
+	|   /  | 
+	|  /   | 
+	| /    | 
+	(0)---(1) 
+	*/
+	bool graph[V][V] = { 
+		{ 0, 1, 1, 1 }, 
+		{ 1, 0, 1, 0 }, 
+		{ 1, 1, 0, 1 }, 
+		{ 1, 0, 1, 0 }, 
+	}; 
+	int m = 3; // Number of colors 
+	graphColoring(graph, m); 
+	return 0; 
+} 
+
+output:
+Solution Exists: Following are the assigned colors 
+ 1  2  3  2
+
+53)Rat in a Maze
+---------------------------------------------------
+Time complexity is an exponential relationship O(bm) where b is the branching factor, and m is the maximal depth of a leaf node.� Number of nodes generated:
+
+
+1 + b + b^2 + � + b^m = O(b^m)//b can be directions U,D,L,R and m can be max(row,col);
+TC:O(4^m)
+
+Space complexity is O(bm) or O(m).� It is a linear relationship, not an exponential relationship like the Time complexity.
+
+// C++ implemenattion of the above approach 
+#include <bits/stdc++.h> 
+#define MAX 5 
+using namespace std; 
+
+// Function returns true if the 
+// move taken is valid else 
+// it will return false. 
+bool isSafe(int row, int col, int m[][MAX], 
+				int n, bool visited[][MAX]) 
+{ 
+	if (row == -1 || row == n || col == -1 || 
+				col == n || visited[row][col] 
+						|| m[row][col] == 0) 
+		return false; 
+
+	return true; 
+} 
+
+// Function to print all the possible 
+// paths from (0, 0) to (n-1, n-1). 
+void printPathUtil(int row, int col, int m[][MAX], 
+			int n, string& path, vector<string>& 
+			possiblePaths, bool visited[][MAX]) 
+{ 
+	// This will check the initial point 
+	// (i.e. (0, 0)) to start the paths. 
+	if (row == -1 || row == n || col == -1 
+			|| col == n || visited[row][col] 
+						|| m[row][col] == 0) 
+		return; 
+
+	// If reach the last cell (n-1, n-1) 
+	// then store the path and return 
+	if (row == n - 1 && col == n - 1) { 
+		possiblePaths.push_back(path); 
+		return; 
+	} 
+
+	// Mark the cell as visited 
+	visited[row][col] = true; 
+
+	// Try for all the 4 directions (down, left, 
+	// right, up) in the given order to get the 
+	// paths in lexicographical order 
+
+	// Check if downward move is valid 
+	if (isSafe(row + 1, col, m, n, visited)) 
+	{ 
+		path.push_back('D'); 
+		printPathUtil(row + 1, col, m, n, 
+				path, possiblePaths, visited); 
+		path.pop_back(); 
+	} 
+
+	// Check if the left move is valid 
+	if (isSafe(row, col - 1, m, n, visited)) 
+	{ 
+		path.push_back('L'); 
+		printPathUtil(row, col - 1, m, n, 
+				path, possiblePaths, visited); 
+		path.pop_back(); 
+	} 
+
+	// Check if the right move is valid 
+	if (isSafe(row, col + 1, m, n, visited)) 
+	{ 
+		path.push_back('R'); 
+		printPathUtil(row, col + 1, m, n, 
+				path, possiblePaths, visited); 
+		path.pop_back(); 
+	} 
+
+	// Check if the upper move is valid 
+	if (isSafe(row - 1, col, m, n, visited)) 
+	{ 
+		path.push_back('U'); 
+		printPathUtil(row - 1, col, m, n, 
+			path, possiblePaths, visited); 
+		path.pop_back(); 
+	} 
+
+	// Mark the cell as unvisited for 
+	// other possible paths 
+	visited[row][col] = false; 
+} 
+
+// Function to store and print 
+// all the valid paths 
+void printPath(int m[MAX][MAX], int n) 
+{ 
+	// vector to store all the possible paths 
+	vector<string> possiblePaths; 
+	string path; 
+	bool visited[n][MAX]; 
+	memset(visited, false, sizeof(visited)); 
+	
+	// Call the utility function to 
+	// find the valid paths 
+	printPathUtil(0, 0, m, n, path, 
+					possiblePaths, visited); 
+
+	// Print all possible paths 
+	for (int i = 0; i < possiblePaths.size(); i++) 
+		cout << possiblePaths[i] << " "; 
+} 
+
+// Driver code 
+int main() 
+{ 
+	int m[MAX][MAX] = { { 1, 0, 0, 0, 0 }, 
+						{ 1, 1, 1, 1, 1 }, 
+						{ 1, 1, 1, 0, 1 }, 
+						{ 0, 0, 0, 0, 1 }, 
+						{ 0, 0, 0, 0, 1 } }; 
+	int n = sizeof(m) / sizeof(m[0]); 
+	printPath(m, n); 
+
+	return 0; 
+} 
+
+Output:
+DDRRURRDDD DDRURRRDDD DRDRURRDDD DRRRRDDD
+
+54)Print all Permutations of a string/array
+------------------------------------------------------
+Time Complexity: O(n*n!) 
+
+// C++ program to print all 
+// permutations with duplicates allowed 
+#include <bits/stdc++.h> 
+using namespace std; 
+
+
+// Function to print permutations of string 
+// This function takes three parameters: 
+// 1. String 
+// 2. Starting index of the string 
+// 3. Ending index of the string. 
+void permute(string a, int l, int r) 
+{ 
+	// Base case 
+	if (l == r) 
+		cout<<a<<endl; 
+	else
+	{ 
+		// Permutations made 
+		for (int i = l; i <= r; i++) 
+		{ 
+
+			// Swapping done 
+			swap(a[l], a[i]); 
+
+			// Recursion called 
+			permute(a, l+1, r); 
+
+			//backtrack 
+			swap(a[l], a[i]); 
+		} 
+	} 
+} 
+
+// Driver Code 
+int main() 
+{ 
+	string str = "ABC"; 
+	int n = str.size(); 
+	permute(str, 0, n-1); 
+	return 0; 
+} 
+
+// This is code is contributed by rathbhupendra 
+
+
+Output:
+
+ABC
+ACB
+BAC
+BCA
+CBA
+CAB
+
+55)Word Break (print all ways)
+------------------------------------------------------
+ TC:O(2n*s)/*s is string and n is size of dict*/	SC:O(n)/*space complexity doubt*/
+
+
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+void breakPossible(string s,unordered_map<string,bool> dict,vector<string> &res,int i=0,vector<string> words=vector<string>())
+{
+	if(i>=s.length())
+	{
+		if(!words.size())
+		{
+			return;
+		}
+		int l=words[0].length();
+		string sent=words[0];
+		for(auto itr=words.begin()+1;itr!=words.end();itr++)
+		{
+			l+=(*itr).length();
+			sent+=" "+(*itr);
+		}
+		if(l==s.length())
+		{
+			res.push_back(sent);
+		}
+		return;
+	}
+	int c=i;
+	string t="";
+	while(c<s.length())
+	{
+		t+=s[c];
+		c++;
+		if(dict[t])
+		{
+			words.push_back(t);
+			breakPossible(s,dict,res,c,words);
+			words.pop_back();
+		}
+	}
+}
+
+int main()
+{
+	int t;
+	cin>>t;
+	for(int iter=0;iter<t;iter++)
+	{
+		int n;
+		cin>>n;
+		unordered_map<string,bool> um;
+		for(int i=0;i<n;i++)
+		{
+			string e;
+			cin>>e;
+			um[e]=true;
+		}
+		string s;
+		cin>>s;
+		vector<string> res;
+		breakPossible(s,um,res);
+		for(auto itr=res.begin();itr!=res.end();itr++)
+		{
+			cout<<'('<<(*itr)<<')';
+		}
+		cout<<endl;
+	}
+	return 0;
+}
+
+dictionary: {i, hello, mango, man, how, ice, cream, like, cell}
+string: "icelikemango"
+Output: Yes
+The string can be segmented as "ice like mango".
+
+56)Combination sum-1
+---------------------------------------------------
+Based on Author's point of view:
+I think the time complexity of this is O(#candidates^target) because the height of the tree would be target and degree of each node would be number of candidates. Space complexity is O(target).
+
+A more accurately expression may be O(#candidates^(target/min of candidates))
+
+class Solution {
+public:
+    std::vector<std::vector<int> > combinationSum(std::vector<int> &candidates, int target) {
+        std::sort(candidates.begin(), candidates.end());
+        std::vector<std::vector<int> > res;
+        std::vector<int> combination;
+        combinationSum(candidates, target, res, combination, 0);
+        return res;
+    }
+private:
+    void combinationSum(std::vector<int> &candidates, int target, std::vector<std::vector<int> > &res, std::vector<int> &combination, int begin) {
+        if (!target) {
+            res.push_back(combination);
+            return;
+        }
+        for (int i = begin; i != candidates.size() && target >= candidates[i]; ++i) {
+            combination.push_back(candidates[i]);
+            combinationSum(candidates, target - candidates[i], res, combination, i);
+            combination.pop_back();
+        }
+    }
+};
+
+Note:
+    *)All numbers (including target) will be positive integers.
+    *)The solution set must not contain duplicate combinations.
+
+Example 1:
+
+Input: candidates = [2,3,6,7], target = 7,
+A solution set is:
+[
+  [7],
+  [2,2,3]
+]
+
+Example 2:
+
+Input: candidates = [2,3,5], target = 8,
+A solution set is:
+[
+  [2,2,2,2],
+  [2,3,3],
+  [3,5]
+]
+
+57)Combination sum-2
+--------------------------------------------------------
+/*
+Given a collection of candidate numbers (candidates) and a target number (target), find all unique combinations in candidates where the candidate numbers sums to target.
+
+Each number in candidates may only be used once in the combination.
+
+Note:
+
+    All numbers (including target) will be positive integers.
+    The solution set must not contain duplicate combinations.
+
+Example 1:
+
+Input: candidates = [10,1,2,7,6,1,5], target = 8,
+A solution set is:
+[
+  [1, 7],
+  [1, 2, 5],
+  [2, 6],
+  [1, 1, 6]
+]
+
+Example 2:
+
+Input: candidates = [2,5,2,1,2], target = 5,
+A solution set is:
+[
+  [1,2,2],
+  [5]
+]
+
+
+*/
+
+class Solution {
+public:
+    std::vector<std::vector<int> > combinationSum2(std::vector<int> &candidates, int target) {
+        std::sort(candidates.begin(), candidates.end());
+        std::vector<std::vector<int> > res;
+        std::vector<int> combination;
+        combinationSum2(candidates, target, res, combination, 0);
+        return res;
+    }
+private:
+    void combinationSum2(std::vector<int> &candidates, int target, std::vector<std::vector<int> > &res, std::vector<int> &combination, int begin) {
+        if (!target) {
+            res.push_back(combination);
+            return;
+        }
+        for (int i = begin; i != candidates.size() && target >= candidates[i]; ++i)
+            if (i == begin || candidates[i] != candidates[i - 1]) {
+                combination.push_back(candidates[i]);
+                combinationSum2(candidates, target - candidates[i], res, combination, i + 1);
+                combination.pop_back();
+            }
+    }
+};
+
+58)Palindrome Partioning
+----------------------------------------------------
+TC:O(n*2^n)	SC:O(n) /*length of the string*/
+
+class Solution {
+public:
+    vector<vector<string>> partition(string s) {
+        vector<vector<string> > ret;
+        if(s.empty()) return ret;
+        
+        vector<string> path;
+        dfs(0, s, path, ret);
+        
+        return ret;
+    }
+    
+    void dfs(int index, string& s, vector<string>& path, vector<vector<string> >& ret) {
+        if(index == s.size()) {
+            ret.push_back(path);
+            return;
+        }
+        for(int i = index; i < s.size(); ++i) {
+            if(isPalindrome(s, index, i)) {
+                path.push_back(s.substr(index, i - index + 1));
+                dfs(i+1, s, path, ret);
+                path.pop_back();
+            }
+        }
+    }
+    
+    bool isPalindrome(const string& s, int start, int end) {
+        while(start <= end) {
+            if(s[start++] != s[end--])
+                return false;
+        }
+        return true;
+    }
+};
+
+Input: "aab"
+Output:
+[
+  ["aa","b"],
+  ["a","a","b"]
+]
+
+Input:"nitin"
+output:
+n i t i n
+n iti n
+nitin
+
+59)Subset Sum-1
+-----------------------------------
+TC:O(2*2^n) /*n is length of string*/
+
+/*
+Given a set of distinct integers, nums, return all possible subsets (the power set).
+
+Note: The solution set must not contain duplicate subsets.
+
+Example:
+
+Input: nums = [1,2,3]
+Output:
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+*/
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> subs;
+        vector<int> sub;
+        subsets(nums, 0, sub, subs);
+        return subs;
+    }
+private:
+    void subsets(vector<int>& nums, int index, vector<int>& sub, vector<vector<int>>& subs) {
+        subs.push_back(sub);
+        for (int i = index; i < nums.size(); i++) {
+            sub.push_back(nums[i]);
+            subsets(nums, i + 1, sub, subs);
+            sub.pop_back();
+        }
+    }
+};
+
+
+60)Subset Sum-2
+--------------------------------------------
+TC:O(2*2^n) /*n is length of string*/
+
+/*
+Given a collection of integers that might contain duplicates, nums, return all possible subsets (the power set).
+
+Note: The solution set must not contain duplicate subsets.
+
+Example:
+
+Input: [1,2,2]
+Output:
+[
+  [2],
+  [1],
+  [1,2,2],
+  [2,2],
+  [1,2],
+  []
+]
+
+
+*/
+
+class Solution {
+public:
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        vector<vector<int>> subs;
+        vector<int> sub;
+        sort(nums.begin(),nums.end());
+        subsets(nums, 0, sub, subs);
+        return subs;
+    }
+private:
+    void subsets(vector<int>& nums, int index, vector<int>& sub, vector<vector<int>>& subs) {
+        subs.push_back(sub);
+        for (int i = index; i < nums.size(); i++) {
+            if(i==index||nums[i-1]!=nums[i]){
+            sub.push_back(nums[i]);
+            subsets(nums, i + 1, sub, subs);
+            sub.pop_back();}
+        }
+    }
+};
+
+61)K-th permutation Sequence
+----------------------------------------------
+TC:O(n)  	SC:O(n) /*for factorial*/
+The set [1,2,3,...,n] contains a total of n! unique permutations.
+
+/*By listing and labeling all of the permutations in order, we get the following sequence for n = 3:
+
+    "123"
+    "132"
+    "213"
+    "231"
+    "312"
+    "321"
+
+Given n and k, return the kth permutation sequence.
+
+Note:
+
+    Given n will be between 1 and 9 inclusive.
+    Given k will be between 1 and n! inclusive.
+
+Example 1:
+
+Input: n = 3, k = 3
+Output: "213"
+
+Example 2:
+
+Input: n = 4, k = 9
+Output: "2314"*/
 
 
 
-  
+class Solution {
+public:
+    // Our recursive function that will complete the ans string.
+	// v - is our current array = [1,2,3,4]
+	// ans is the answer string, n and k are current values of n and k
+	// factVal is an array containing the factorial of all integers from 0-9 to get factorial in O(1) time.
+	// That means I have stored all the factorials in this array before hand to avoid calculation. You can also write factorial funciton if you want.
+	
+    void setPerm(vector<int>& v,string& ans,int n,int k,vector<int>& factVal){
+       // if there is only one element left append it to our ans (Base case)
+	   if(n==1){
+            ans+=to_string(v.back());
+            return;
+        }
+		
+		// We are calculating the required index.  factVal[n-1] means for n =  4 => factVal[3] = 6.
+        // 15 / 6 = 2 will the index for k =15 and n = 4.
+		int index = (k/factVal[n-1]);
+        // if k is a multiple of elements of partition then decrement the index (Corner case I was talking about)
+		if(k % factVal[n-1] == 0){
+            index--;
+        }
+		
+		ans+= to_string(v[index]);  // add value to string
+        v.erase(v.begin() + index);  // remove element from array
+        k -= factVal[n-1] * index;   // adjust value of k; k = 15 - 6*2 = 3.
+		// Recursive call with n=n-1 as one element is added we need remaing.
+        setPerm(v,ans,n-1,k,factVal);
+    }
+    
+    string getPermutation(int n, int k) {
+        if(n==1) return "1";
+		//Factorials of 0-9 stored in the array. factVal[3] = 6. (3! = 6)
+        vector<int>factVal = {1,1,2,6,24,120,720,5040,40320,362880};
+        /*
+        or
+         //Store all factorials from 0 to N
+        fact.push_back(1);
+        int f=1;
+        for(int i=1;i<n;++i)
+        {
+            f*=i;
+            fact.push_back(f);
+        }
+        */
+        for(int i=1;i<=n;i++){
+            factVal[i]=factVal[i-1]*i;
+        }
+        string ans = "";
+        vector<int> v;
+		// Fill the array with all elements
+        for(int i=1;i<=n;i++) v.emplace_back(i);
+        setPerm(v,ans,n,k,factVal);
+        return ans;
+    }
+};
+
+
+62)1. 1/N-th root of an integer (use binary search) (square root, cube root, ..)
+--------------------------------------------------------------------
+TC:O(logn)	SC:O(1)
+
+/*floor result*/
+
+// A C++ program to find floor(sqrt(x)
+#include<bits/stdc++.h>
+using namespace std;
+
+// Returns floor of square root of x
+int floorroot(int x, int p)
+{
+	// Base cases
+	if (x == 0 || x == 1)
+		return x;
+
+	// Do Binary Search for floor(sqrt(x))
+	int start = 1, end = x, ans;
+	while (start <= end)
+	{
+		int mid = (start + end) / 2;
+
+		// If x is a perfect square
+		if (pow(mid, p) == x)
+			return mid;
+
+		// Since we need floor, we update answer when mid*mid is
+		// smaller than x, and move closer to sqrt(x)
+		if (pow(mid, p) < x)
+		{
+			start = mid + 1;
+			ans = mid;
+		}
+		else // If mid*mid is greater than x
+			end = mid - 1;
+	}
+	return ans;
+}
+
+// Driver program
+int main()
+{
+	int x ;
+	//Enter the integer
+	cin >> x;
+	int p = 0;
+	cin >> p;
+	cout << floorroot(x, p) << endl;
+	return 0;
+}
+
+
+..................................................
+
+
+/*accurate result*/
+// C++ program to find cubic root of a number
+// using Binary Search
+#include <bits/stdc++.h>
+using namespace std;
+
+// Returns the absolute value of n-mid*mid*mid
+double diff(double n, double mid, int p)
+{
+	if (n > (pow(mid, p)))
+		return (n - pow(mid, p));
+	else
+		return (pow(mid, p) - n);
+}
+
+// Returns cube root of a no n
+double Root(double n, int p)
+{
+	// Set start and end for binary search
+	double start = 0, end = n;
+
+	// Set precision
+	double e = 0.0000001;
+
+	while (true)
+	{
+		double mid = (start + end) / 2;
+		double error = diff(n, mid, p);
+
+		// If error is less than e then mid is
+		// our answer so return mid
+		if (error <= e)
+			return mid;
+
+		// If mid*mid*mid is greater than n set
+		// end = mid
+		if ((pow(mid, p)) > n)
+			end = mid;
+
+		// If mid*mid*mid is less than n set
+		// start = mid
+		else
+			start = mid;
+	}
+}
+
+// Driver code
+int main()
+{
+	double n;
+	//cout << "Enter the integer";
+	cin >> n;
+	int p = 0;
+	//cout << "Enter the 1/Nth root of the integer";
+	cin >> p;
+	printf("%d root of %lf is %lf\n", p,
+	       n, Root(n, p));
+	return 0;
+}
+
+63)Matrix Median
+------------------------------------------------
+TC:O(32*r*log(c))	SC:O(1)
+
+// C++ program to find median of a matrix 
+// sorted row wise 
+#include<bits/stdc++.h> 
+using namespace std; 
+
+const int MAX = 100; 
+
+// function to find median in the matrix 
+int binaryMedian(int m[][MAX], int r ,int c) 
+{ 
+	int min = INT_MAX, max = INT_MIN; 
+	for (int i=0; i<r; i++) 
+	{ 
+		// Finding the minimum element 
+		if (m[i][0] < min) 
+			min = m[i][0]; 
+
+		// Finding the maximum element 
+		if (m[i][c-1] > max) 
+			max = m[i][c-1]; 
+	} 
+
+	int desired = (r * c + 1) / 2; 
+	while (min < max) 
+	{ 
+		int mid = min + (max - min) / 2; 
+		int place = 0; 
+
+		// Find count of elements smaller than mid 
+		for (int i = 0; i < r; ++i) 
+			place += upper_bound(m[i], m[i]+c, mid) - m[i]; 
+		if (place < desired) 
+			min = mid + 1; 
+		else
+			max = mid; 
+	} 
+	return min; 
+} 
+
+// driver program to check above functions 
+int main() 
+{ 
+	int r = 3, c = 3; 
+	int m[][MAX]= { {1,3,5}, {2,6,9}, {3,6,9} }; 
+	cout << "Median is " << binaryMedian(m, r, c) << endl; 
+	return 0; 
+}
+ 
+Output:
+Median is 5
+
+64)Find the element that appears once in sorted array, and rest element appears twice(Binary search)
+-------------------------------------------------------------------------------------
+TC:O(logn)	SC:O(1)
+
+#include <vector>
+#include <iostream>
+using namespace std;
+
+int appears_once(const vector<int> &ar, int lo, int hi)  {  // variant of binary search
+    if(lo > hi) return ar[lo];  // Base Case
+    
+    int mid = lo+(hi-lo)/2; // for a cosistently lower mid
+    
+    // if mid is 0 or mid is the last element in the array
+    if((mid == 0 && ar[mid] != ar[mid+1]) || (mid == ar.size()-1 && ar[mid] != ar[mid-1]))
+        return ar[mid];
+    else    // if mid is anything other than 0th element or last element
+        if(!(mid&1))    // even mid
+            if(ar[mid] == ar[mid+1])
+                return appears_once(ar, mid+2, hi);
+            else return appears_once(ar, lo, mid-2);
+        else            // odd mid
+            if(ar[mid] == ar[mid-1])
+                return appears_once(ar, mid+1, hi);
+            else return appears_once(ar, lo, mid-1);
+}
+
+int main() {
+	int t;  cin >> t;
+	while(t--) {
+	    int n;  cin >> n;
+	    vector<int> ar(n);
+	    for(int i = 0; i < n; ++i)
+	        cin >> ar[i];
+	        
+	    cout << appears_once(ar, 0, ar.size()-1) << endl;
+	}
+	return 0;
+}
+
+output:
+11
+1 1 2 2 3 3 4 50 50 65 65
+Output:
+4
+
+65)Search element in a sorted and rotated array.
+----------------------------------------------
+TC:O(logn)	SC:O(1)
+
+/*
+Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+(i.e., [0,1,2,4,5,6,7] might become [4,5,6,7,0,1,2]).
+You are given a target value to search. If found in the array return its index, otherwise return -1.
+You may assume no duplicate exists in the array.
+Your algorithm's runtime complexity must be in the order of O(log n).
+Example 1:
+
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+
+Example 2:
+
+Input: nums = [4,5,6,7,0,1,2], target = 3
+Output: -1
+
+
+*/
+
+/* Doing binary search to find the pivot node and doing binary search for finding givrn element*/
+/* C++ Program to search an element 
+in a sorted and pivoted array*/
+#include <bits/stdc++.h> 
+using namespace std; 
+
+/* Standard Binary Search function*/
+int binarySearch(int arr[], int low, 
+				int high, int key) 
+{ 
+if (high < low) 
+	return -1; 
+	
+int mid = (low + high)/2; /*low + (high - low)/2;*/
+if (key == arr[mid]) 
+	return mid; 
+	
+if (key > arr[mid]) 
+	return binarySearch(arr, (mid + 1), high, key); 
+	
+// else 
+	return binarySearch(arr, low, (mid -1), key); 
+} 
+
+/* Function to get pivot. For array 3, 4, 5, 6, 1, 2 
+it returns 3 (index of 6) */
+int findPivot(int arr[], int low, int high) 
+{ 
+// base cases 
+if (high < low) return -1; 
+if (high == low) return low; 
+
+int mid = (low + high)/2; /*low + (high - low)/2;*/
+if (mid < high && arr[mid] > arr[mid + 1]) 
+	return mid; 
+	
+if (mid > low && arr[mid] < arr[mid - 1]) 
+	return (mid-1); 
+	
+if (arr[low] >= arr[mid]) 
+	return findPivot(arr, low, mid-1); 
+	
+return findPivot(arr, mid + 1, high); 
+} 
+
+/* Searches an element key in a pivoted 
+sorted array arr[] of size n */
+int pivotedBinarySearch(int arr[], int n, int key) 
+{ 
+int pivot = findPivot(arr, 0, n-1); 
+
+// If we didn't find a pivot, 
+// then array is not rotated at all 
+if (pivot == -1) 
+	return binarySearch(arr, 0, n-1, key); 
+
+// If we found a pivot, then first compare with pivot 
+// and then search in two subarrays around pivot 
+if (arr[pivot] == key) 
+	return pivot; 
+	
+if (arr[0] <= key) 
+	return binarySearch(arr, 0, pivot-1, key); 
+	
+	return binarySearch(arr, pivot+1, n-1, key); 
+} 
+
+/* Driver program to check above functions */
+int main() 
+{ 
+// Let us search 3 in below array 
+int arr1[] = {5, 6, 7, 8, 9, 10, 1, 2, 3}; 
+int n = sizeof(arr1)/sizeof(arr1[0]); 
+int key = 3; 
+	
+// Function calling 
+cout << "Index of the element is : " << 
+		pivotedBinarySearch(arr1, n, key); 
+			
+return 0; 
+} 
+
+------------------------------------------------
+/*Doing binary search single time to find the given element*/
+
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int low=0,high=nums.size()-1;
+        while(low<=high){
+            int mid=(low+high)/2;
+            if(target==nums[mid]) return mid; //Case 1: Found X,Yeah
+            if(nums[mid]<=nums[high])//Case 2:Right half is sorted
+            {
+                if(target>nums[mid]&& target<=nums[high]){
+                    low=mid+1;//Go searching in right sorted half
+                }else{
+                    high=mid-1;//go searching left
+                }
+            }else{  //Case 3: Left half is sorted
+                if(nums[low]<=target && target<nums[mid] ){ //Go searching in left sorted half
+                    high=mid-1;
+                }else{
+                    low=mid+1; //go searching right sorted half
+                }
+            }
+        }
+        cout<<high;
+        return -1;
+    }
+};
+
+66)K-th element of two sorted arrays
+-------------------------------------------
+TC:O(logk)	SC:O(1)
+/*
+Explanation:
+arr1[5] = {2, 3, 5, 7, 9};
+arr2[4] = {1, 4, 8, 10};
+
+Instead of comparing the middle element of the arrays,
+we compare the k / 2nd element.
+Let arr1 and arr2 be the arrays.
+Now, if arr1[k / 2]  arr1[1]
+
+New subproblem:
+Array 1 - 6 7 9
+Array 2 - 1 4 8 10
+k = 5 - 2 = 3
+
+floor(k / 2) = 1
+arr1[1] = 6
+arr2[1] = 1
+arr1[1] > arr2[1]
+
+New subproblem:
+Array 1 - 6 7 9
+Array 2 - 4 8 10
+k = 3 - 1 = 2
+
+floor(k / 2) = 1
+arr1[1] = 6
+arr2[1] = 4
+arr1[1] > arr2[1]
+
+New subproblem:
+Array 1 - 6 7 9
+Array 2 - 8 10
+k = 2 - 1 = 1
+
+Now, we directly compare first elements,
+since k = 1. 
+arr1[1] < arr2[1]
+Hence, arr1[1] = 6 is the answer.
+
+
+*/
+// C++ Program to find kth element from two sorted arrays 
+// Time Complexity: O(log k) 
+
+#include <iostream> 
+using namespace std; 
+
+int kth(int arr1[], int m, int arr2[], int n, int k) 
+{ 
+	
+if (k > (m+n) || k < 1) return -1; 
+	
+// let m <= n 
+if (m > n) return kth(arr2, n, arr1, m, k); 
+	
+// if arr1 is empty returning k-th element of arr2 
+if (m == 0) return arr2[k - 1]; 
+	
+// if k = 1 return minimum of first two elements of both arrays 
+if (k == 1) return min(arr1[0], arr2[0]); 
+	
+// now the divide and conquer part 
+int i = min(m, k / 2), j = min(n, k / 2); 
+	
+if (arr1[i - 1] > arr2[j - 1] ) 
+	// Now we need to find only k-j th element since we have found out the lowest j 
+	return kth(arr1, m, arr2 + j, n - j, k - j); 
+else
+	// Now we need to find only k-i th element since we have found out the lowest i 
+	return kth(arr1 + i, m - i, arr2, n, k - i); 
+} 
+
+// Driver code 
+int main() 
+{ 
+	int arr1[5] = {2, 3, 6, 7, 9}; 
+	int arr2[4] = {1, 4, 8, 10}; 
+	int m = sizeof(arr1)/sizeof(arr1[0]); 
+	int n = sizeof(arr2)/sizeof(arr2[0]); 
+	int k = 5; 
+	
+	int ans = kth(arr1,m,arr2, n, k); 
+	
+	if(ans == -1) cout<<"Invalid query"; 
+	else cout<<ans; 
+	
+	return 0; 
+}
+output:6 
+/*
+Input : Array 1 - 2 3 6 7 9
+        Array 2 - 1 4 8 10
+        k = 5
+Output : 6
+Explanation: The final sorted array would be -
+1, 2, 3, 4, 6, 7, 8, 9, 10
+The 5th element of this array is 6
+*/ 
+
+
+67)Median of two sorted array
+-------------------------------------------
+TC:O(log(min(m,n))	SC:O(1)
+
+/*
+There are two sorted arrays nums1 and nums2 of size m and n respectively.
+
+Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
+
+You may assume nums1 and nums2 cannot be both empty.
+
+Example 1:
+
+nums1 = [1, 3]
+nums2 = [2]
+
+The median is 2.0
+
+Example 2:
+
+nums1 = [1, 2]
+nums2 = [3, 4]
+
+The median is (2 + 3)/2 = 2.5
+
+*/
+
+ double findMedianSortedArrays(vector<int>& a1, vector<int>& a2) {
+        if (a1.size() > a2.size()) swap(a1, a2); // make sure a1 is shorter
+        
+        int n1 = a1.size(), n2 = a2.size();
+        
+        // range of a1 cut location: n1 means no right half for a1
+        int lo = 0, hi = n1;
+        while (lo <= hi) {
+            int cut1 = (lo + hi)/2; // cut location is counted to right half
+            int cut2 = (n1 + n2)/2 - cut1;
+            
+            int maxLeftX = cut1 == 0? INT_MIN : a1[cut1-1];//Get l1,l2,r1,r2 respectively
+            int maxLeftY = cut2 == 0? INT_MIN : a2[cut2-1];
+            int minRightX = cut1 == n1? INT_MAX : a1[cut1];
+            int minRightY = cut2 == n2? INT_MAX : a2[cut2];
+            
+            if (maxLeftX > minRightY) hi = cut1-1;
+            else if (maxLeftY > minRightX) lo = cut1+1;
+            else return (n1+n2)%2? min(minRightX,minRightY) : (max(maxLeftX,maxLeftY) + min(minRightX,minRightY))/2.;
+        }
+            return -1;
+   }
+
+reference: https://www.youtube.com/watch?v=LPFhl65R7ww
+
+Bits
+==========================================================
+68)Check if a number if a power of 2 or not in O(1)
+
+#include <bits/stdc++.h> 
+using namespace std; 
+#define bool int 
+
+/* Function to check if x is power of 2*/
+bool isPowerOfTwo (int x) 
+{ 
+	/* First x in the below expression is for the case when x is 0 */
+	return x && (!(x&(x-1))); //for example 8=1000 and 8-1 =>7=0111	and we also eed to avoid "0" as input
+} 
+
+/*Driver code*/
+int main() 
+{ 
+	isPowerOfTwo(31)? cout<<"Yes\n": cout<<"No\n"; 
+	isPowerOfTwo(64)? cout<<"Yes\n": cout<<"No\n"; 
+	return 0; 
+} 
+
+/*Using log*/
+// C++ Program to find whether a 
+// no is power of two 
+#include<bits/stdc++.h> 
+using namespace std; 
+
+// Function to check if x is power of 2 
+bool isPowerOfTwo(int n) 
+{ 
+if(n==0) 
+return false; 
+
+return (ceil(log2(n)) == floor(log2(n))); 
+} 
+
+// Driver program 
+int main() 
+{ 
+	isPowerOfTwo(31)? cout<<"Yes"<<endl: cout<<"No"<<endl; 
+	isPowerOfTwo(64)? cout<<"Yes"<<endl: cout<<"No"<<endl; 
+
+	return 0; 
+} 
+-----------------------------------------------------------------------
+69)Count total set bits
+TC:O(n)		SC:O(n)
+
+class Solution {
+public:
+    vector<int> countBits(int num) {
+        //mem[i] = No of 1s from 0 to number i
+        vector<int> mem(num+1);
+        mem[0] = 0;
+        
+        for(int i=1;i<=num;++i)
+            mem[i] = mem[i/2] + i%2;
+        
+        return mem;
+    }
+};
+
+/*
+Input: 2
+Output: [0,1,1]
+
+Input: 5
+Output: [0,1,1,2,1,2]
+
+*/
+-------------------------------------------------------
+70)
+TC:O(log(n^2))		SC:O(1)
+/*TIME COMPLEXITY EXPLANATION
+Good question. I hadn't thought of that till now. But let me try to deduce how lee215's solution has a O (log (n^2)) time complexity.
+Let's say for example, we had an array of length n.
+A doubly nested for loop that looks like the following would have a time complexity of O(n^2):
+
+
+for(int i = 0; i < n; i++){
+    for(int j = 0; j < i; j++){
+       //...
+    }
+
+}
+
+
+Similarly, the code I'm running is doing the following:
+Let's say a is 100, b is 2,4,8,16,32,64, stopping before 100.
+while( a - (b << 1 << x) >= 0){
+    x++;
+}
+In our code, b is like the j pointer, a is like the i pointer.
+Then a is decremented because of this line
+a -= b << x;
+so a would be readjusted to 36 ( 100 - 64 ). b starts again from 2. So b loops from 2,4,8,16,32, stopping before 36.
+
+
+So you can deduce by analogy the n^2 where n would be dividend. The reason log comes into this is because we are squaring b at each step. The log is a logarithm of base 2.
+
+*/
+
+ int divide(int A, int B) {
+        if (A == INT_MIN && B == -1) return INT_MAX;
+        long int a = abs(A), b = abs(B), res = 0, x = 0;
+        while (a - b >= 0) {
+            for (x = 0; a - (b << x << 1) >= 0; x++);
+            res += 1 << x;
+            a -= b << x;
+        }
+        return (A > 0) == (B > 0) ? res : -res;
+    }
+
+ref:https://www.youtube.com/watch?v=htX69j1jf5U
+
+Input: dividend = 10, divisor = 3
+Output: 3
+Explanation: 10/3 = truncate(3.33333..) = 3.
+
+
+Input: dividend = 7, divisor = -3
+Output: -2
+Explanation: 7/-3 = truncate(-2.33333..) = -2.
 
 
 
 
-
-
+ 
