@@ -2609,7 +2609,9 @@ sent in the parameter) is already
 used by its adjacent 
 vertices(i-->adj vertices) or 
 not (i.e, color[i]==c) */
-bool isSafe( int v, bool graph[V][V], int color[], int c) 
+bool isSafe( 
+	int v, bool graph[V][V], 
+	int color[], int c) 
 { 
 	for (int i = 0; i < V; i++) 
 		if ( 
@@ -3854,7 +3856,7 @@ The median is (2 + 3)/2 = 2.5
 
 reference: https://www.youtube.com/watch?v=LPFhl65R7ww
 
-Bits
+Bits - https://www.hackerearth.com/practice/notes/bit-manipulation/
 ==========================================================
 68)Check if a number if a power of 2 or not in O(1)
 
@@ -3927,7 +3929,8 @@ Output: [0,1,1,2,1,2]
 
 */
 -------------------------------------------------------
-70)
+70)Divide Integers without / operator
+
 TC:O(log(n^2))		SC:O(1)
 /*TIME COMPLEXITY EXPLANATION
 Good question. I hadn't thought of that till now. But let me try to deduce how lee215's solution has a O (log (n^2)) time complexity.
@@ -3980,7 +3983,2410 @@ Input: dividend = 7, divisor = -3
 Output: -2
 Explanation: 7/-3 = truncate(-2.33333..) = -2.
 
+----------------------------------------------------------
+71)Power Set
+TC:O(n*2^n)	SC:O(1)
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        int n = nums.size(), p = 1 << n;//for n size of input subset always will be 2^n(1<<n is same as 2^n)
+        vector<vector<int>> subs(p);
+        for (int i = 0; i < p; i++) {
+            for (int j = 0; j < n; j++) {
+                if ((i >> j) & 1) {
+                    subs[i].push_back(nums[j]);
+                }
+            }
+        }
+        return subs;
+    }
+};
+
+/*
+Input: nums = [1,2,3]
+Output:
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+*/
+ref:https://www.youtube.com/watch?v=MsHFNGltIxw
+--------------------------------------------------------------
+72)Find MSB in o(1)      -https://www.hackerearth.com/practice/notes/bit-manipulation/
+
+TC:O(1)		SC:O(1)
+
+long largest_power(long N)
+{
+    //changing all right side bits to 1.
+    N = N| (N>>1);
+    N = N| (N>>2);
+    N = N| (N>>4);
+    N = N| (N>>8);
+
+
+//as now the number is 2 * x-1, where x is required answer, so adding 1 and dividing it by
+ 2. 
+            return (N+1)>>1;
+
+}
+
+Input : 10
+Output : 8
+Binary representation of 10 is 1010
+The most significant bit corresponds
+to decimal number 8.
+
+Input : 18
+Output : 16
+
+------------------------------------------------------------
+73)Find square of a number without using multiplication or division operators.
+TC:O(logn)	SC:O(1)
+/*
+EXPLANATION:
+ square(n) = 0 if n == 0
+  if n is even 
+     square(n) = 4*square(n/2) 
+  if n is odd
+     square(n) = 4*square(floor(n/2)) + 4*floor(n/2) + 1 
+
+Examples
+  square(6) = 4*square(3)
+  square(3) = 4*(square(1)) + 4*1 + 1 = 9
+  square(7) = 4*square(3) + 4*3 + 1 = 4*9 + 4*3 + 1 = 49
+
+How does this work?
+
+If n is even, it can be written as
+  n = 2*x 
+  n2 = (2*x)2 = 4*x2
+If n is odd, it can be written as 
+  n = 2*x + 1
+  n2 = (2*x + 1)2 = 4*x2 + 4*x + 1
+*/
+int square(int n) 
+{ 
+    // Base case 
+    if (n==0) return 0; 
+  
+    // Handle negative number 
+    if (n < 0) n = -n; 
+  
+    // Get floor(n/2) using right shift 
+    int x = n>>1; 
+  
+    // If n is odd 
+    if (n&1) 
+        return ((square(x)<<2) + (x<<2) + 1); 
+    else // If n is even 
+        return (square(x)<<2); 
+} 
+
+Input:5
+Output:25
+
+Input:6
+Output:36
+
+STACK AND QUEUE:
+=================================================================
+
+74)Implementing Stack:
+
+Array:
+/* C++ program to implement basic stack 
+operations */
+#include <bits/stdc++.h> 
+using namespace std; 
+#define MAX 1000 
+class Stack { 
+	int top; 
+public: 
+	int a[MAX]; // Maximum size of Stack 
+	Stack() { top = -1; } 
+	bool push(int x); 
+	int pop(); 
+	int peek(); 
+	bool isEmpty(); 
+}; 
+bool Stack::push(int x) 
+{ 
+	if (top >= (MAX - 1)) { 
+		cout << "Stack Overflow"; 
+		return false; 
+	} 
+	else { 
+		a[++top] = x; 
+		cout << x << " pushed into stack\n"; 
+		return true; 
+	} 
+} 
+int Stack::pop() 
+{ 
+	if (top < 0) { 
+		cout << "Stack Underflow"; 
+		return 0; 
+	} 
+	else { 
+		int x = a[top--]; 
+		return x; 
+	} 
+} 
+int Stack::peek() 
+{ 
+	if (top < 0) { 
+		cout << "Stack is Empty"; 
+		return 0; 
+	} 
+	else { 
+		int x = a[top]; 
+		return x; 
+	} 
+} 
+bool Stack::isEmpty() 
+{ 
+	return (top < 0); 
+} 
+
+// Driver program to test above functions 
+int main() 
+{ 
+	class Stack s; 
+	s.push(10); 
+	s.push(20); 
+	s.push(30); 
+	cout << s.pop() << " Popped from stack\n"; 
+
+	return 0; 
+} 
+
+//Linked List
+
+// C++ program for linked list implementation of stack 
+#include <bits/stdc++.h> 
+using namespace std; 
+// A structure to represent a stack 
+class StackNode { 
+public: 
+	int data; 
+	StackNode* next; 
+}; 
+StackNode* newNode(int data) 
+{ 
+	StackNode* stackNode = new StackNode(); 
+	stackNode->data = data; 
+	stackNode->next = NULL; 
+	return stackNode; 
+} 
+int isEmpty(StackNode* root) 
+{ 
+	return !root; 
+} 
+void push(StackNode** root, int data) 
+{ 
+	StackNode* stackNode = newNode(data); 
+	stackNode->next = *root; 
+	*root = stackNode; 
+	cout << data << " pushed to stack\n"; 
+} 
+int pop(StackNode** root) 
+{ 
+	if (isEmpty(*root)) 
+		return INT_MIN; 
+	StackNode* temp = *root; 
+	*root = (*root)->next; 
+	int popped = temp->data; 
+	free(temp); 
+
+	return popped; 
+} 
+int peek(StackNode* root) 
+{ 
+	if (isEmpty(root)) 
+		return INT_MIN; 
+	return root->data; 
+} 
+int main() 
+{ 
+	StackNode* root = NULL; 
+
+	push(&root, 10); 
+	push(&root, 20); 
+	push(&root, 30); 
+
+	cout << pop(&root) << " popped from stack\n"; 
+
+	cout << "Top element is " << peek(root) << endl; 
+
+	return 0; 
+} 
+
+//Queue implementation using arrays - TC: enqueue=O(1)	Dequeue=O(n)
+
+/* C++ program to implement basic stack 
+operations */
+#include <bits/stdc++.h> 
+
+using namespace std; 
+
+#define MAX 1000 
+
+class Stack { 
+	int top; 
+
+public: 
+	int a[MAX]; // Maximum size of Stack 
+
+	Stack() { top = -1; } 
+	bool push(int x); 
+	int pop(); 
+	int peek(); 
+	bool isEmpty(); 
+}; 
+
+bool Stack::push(int x) 
+{ 
+	if (top >= (MAX - 1)) { 
+		cout << "Stack Overflow"; 
+		return false; 
+	} 
+	else { 
+		a[++top] = x; 
+		cout << x << " pushed into stack\n"; 
+		return true; 
+	} 
+} 
+
+int Stack::pop() 
+{ 
+	if (top < 0) { 
+		cout << "Stack Underflow"; 
+		return 0; 
+	} 
+	else { 
+		int x = a[top--]; 
+		return x; 
+	} 
+} 
+int Stack::peek() 
+{ 
+	if (top < 0) { 
+		cout << "Stack is Empty"; 
+		return 0; 
+	} 
+	else { 
+		int x = a[top]; 
+		return x; 
+	} 
+} 
+
+bool Stack::isEmpty() 
+{ 
+	return (top < 0); 
+} 
+
+// Driver program to test above functions 
+int main() 
+{ 
+	class Stack s; 
+	s.push(10); 
+	s.push(20); 
+	s.push(30); 
+	cout << s.pop() << " Popped from stack\n"; 
+
+	return 0; 
+} 
+
+//Linked List implementation of queue -TC: enqueue=O(1)	Dequeue=O(1)
+#include <bits/stdc++.h> 
+using namespace std; 
+
+struct QNode { 
+	int data; 
+	QNode* next; 
+	QNode(int d) 
+	{ 
+		data = d; 
+		next = NULL; 
+	} 
+}; 
+
+struct Queue { 
+	QNode *front, *rear; 
+	Queue() 
+	{ 
+		front = rear = NULL; 
+	} 
+
+	void enQueue(int x) 
+	{ 
+
+		// Create a new LL node 
+		QNode* temp = new QNode(x); 
+
+		// If queue is empty, then 
+		// new node is front and rear both 
+		if (rear == NULL) { 
+			front = rear = temp; 
+			return; 
+		} 
+
+		// Add the new node at 
+		// the end of queue and change rear 
+		rear->next = temp; 
+		rear = temp; 
+	} 
+
+	// Function to remove 
+	// a key from given queue q 
+	void deQueue() 
+	{ 
+		// If queue is empty, return NULL. 
+		if (front == NULL) 
+			return; 
+
+		// Store previous front and 
+		// move front one node ahead 
+		QNode* temp = front; 
+		front = front->next; 
+
+		// If front becomes NULL, then 
+		// change rear also as NULL 
+		if (front == NULL) 
+			rear = NULL; 
+
+		delete (temp); 
+	} 
+}; 
+
+// Driven Program 
+int main() 
+{ 
+
+	Queue q; 
+	q.enQueue(10); 
+	q.enQueue(20); 
+	q.deQueue(); 
+	q.deQueue(); 
+	q.enQueue(30); 
+	q.enQueue(40); 
+	q.enQueue(50); 
+	q.deQueue(); 
+	cout << "Queue Front : " << (q.front)->data << endl; 
+	cout << "Queue Rear : " << (q.rear)->data; 
+} 
+d
+75)BFS using queue
+--------------------------------------------
+TC:O(V+E) V is Vertices and E is Edges
+
+void bfs(int s,vector<int> adj[],bool vis[])
+{
+    queue<int> q;
+    q.push(s);
+    vis[s]=true;
+    while(!q.empty()){
+        int node = q.front();
+        cout<<node<<" ";
+        q.pop();
+        for(auto i:adj[node])//checking for all the adjacent vertices for that vertex
+	    {
+            if(!vis[i]){
+                vis[i]=true;
+                q.push(i);
+            }
+        }
+    }
+}
+
+76)Implement Stack using Queue
+--------------------------------------------
+TC:
+for Push operation is o(1)
+for pop operation is O(n)
+
+void QueueStack :: push(int x)
+{
+        // Your Code
+        q1.push(x);
+}
+/*The method pop which return the element poped out of the stack*/
+int QueueStack :: pop()
+{
+        // Your Code       
+        
+        if(q1.empty()){
+            return -1;
+        }
+        else{
+            
+            // Transfer from q1 to q2 till only 1 element left
+            while(q1.size()!=1){
+                int ele=q1.front();
+                q1.pop();
+                q2.push(ele);
+            }
+            // Last element left is to be popped
+            int elementDeleted=q1.front();
+            q1.pop();
+            
+            // Swap q1 and q2
+            swap(q1,q2);
+            
+            return elementDeleted;
+            
+        }
+}
+
+77)Implement Queue using Stack
+---------------------------------------------------
+TC:
+for enqueue operation is o(1)
+for dequque operation is O(n)
+
+/* The method push to push element into the queue */
+void StackQueue :: push(int x)
+ {
+        s1.push(x);
+ }
+
+/*The method pop which return the element poped out of the queue*/
+int StackQueue :: pop()
+{
+        if(s1.empty()) return -1;
+
+        //shifting the elements from s1 to s2 , until only one element is left
+        while(s1.size()!=1){
+            int x = s1.top();
+            s1.pop();
+            s2.push(x);
+        }
+
+        //the last element in s1
+        int x = s1.top();
+        s1.pop();
+
+        //shifting back the elements from s2 to s1
+        while(!s2.empty()){
+            int z = s2.top();
+            s2.pop();
+            s1.push(z);
+        }
+
+        //returning the last element
+        return x ;
+}
+
+
+78)Check for balanced parentheses
+---------------------------------------------------
+TC:O(n)		SC:O(n)
+
+bool isValid(string s) {
+    stack<char> st;
+    for(char c : s){
+        if(c == '('|| c == '{' || c == '['){
+            st.push(c);
+        }else{
+            if(st.empty()) return false;
+            if(c == ')' && st.top() != '(') return false;
+            if(c == '}' && st.top() != '{') return false;
+            if(c == ']' && st.top() != '[') return false;
+            st.pop();
+        }
+    }
+return st.empty();
+}
+
+Input: "()"
+Output: true
+
+
+Input: "()[]{}"
+Output: true
+
+
+Input: "(]"
+Output: false
+
+Input: "([)]"
+Output: false
+
+Input: "{[]}"
+Output: true
+
+80)Next Greater Element
+---------------------------------------
+TC:O(n)		SC:O(n)
+
+int main() {
+	int t;
+	cin >> t;
+	while (t--) {
+		long int n;
+		cin >> n;
+		vector<long int> v(n);
+		for (long int i = 0; i < n; i++) {
+			cin >> v[i];
+		}
+		vector<long int> ans(n);
+		stack<long int> s;
+		// Push 1st element (index of 1st element to stack)
+		s.push(0);
+		long int cur;
+		for (long int i = 1; i < n; i++) {
+			cur = v[i];
+			// See if current element can be next larger element for any element in stack
+			while (!s.empty() && cur > v[s.top()]) {
+
+				// Found next larger element for s.top
+				ans[s.top()] = cur;
+				// Pop from stack
+				s.pop();
+			}
+			// Now push current element index to stack
+			s.push(i);
+		}
+		// For remaining elements in stack ans is -1
+		while (!s.empty()) {
+
+			ans[s.top()] = -1;
+			s.pop();
+		}
+		// Print the ans
+		for (long int i = 0; i < n; i++) {
+			cout << ans[i] << " ";
+		}
+		cout << endl;
+	}
+	return 0;
+}
+
+Input:
+4
+1 3 2 4
+4
+4 3 2 1
+Output
+3 4 4 -1
+-1 -1 -1 -1
+
+81)Next smaller element
+-----------------------------------
+TC:O(n)		SC:O(n)
+
+void printNSE(int arr[], int n) 
+{ 
+    stack<int> s; 
+    unordered_map<int, int> mp; 
+    /* push the first element to stack */
+    s.push(arr[0]); 
+    // iterate for rest of the elements 
+    for (int i = 1; i < n; i++) { 
+  
+        if (s.empty()) { 
+            s.push(arr[i]); 
+            continue; 
+        }  
+        /* if stack is not empty, then 
+       pop an element from stack. 
+       If the popped element is smaller 
+       than next, then 
+    a) print the pair 
+    b) keep popping while elements are 
+    smaller and stack is not empty */
+        while (s.empty() == false && s.top() > arr[i]) { 
+            mp[s.top()] = arr[i]; 
+            s.pop(); 
+        }   
+        /* push next to stack so that we can find 
+    next smaller for it */
+        s.push(arr[i]); 
+    } 
+    /* After iterating over the loop, the remaining 
+  elements in stack do not have the next smaller 
+  element, so print -1 for them */
+    while (s.empty() == false) { 
+         mp[s.top()] = -1; 
+        s.pop(); 
+    } 
+    for (int i=0; i<n; i++) 
+       cout << arr[i] << " ---> " << mp[arr[i]] << endl; 
+} 
+
+Input:
+11, 13, 21, 3
+
+Output:
+3, 3, 3, -1
+
+82)LRU cache
+-----------------------------------------
+TC:O(1)
+//DATA STRUCTURE USED
+// doubly linked list in which every node is  pair of key,value.
+// Hash_map which takes key as "key" and value as "iterator of node" of dll 
+
+//TIME COMPLEXITY
+// we want "searching" of pair  - O(1) complexity
+// we need "deletion" of pair (either from somewhere middle or back of dll)  - O(1) comlexity
+// we need "insertion" of pair (at front of dll) - O(1) complexity
+int maxSize;
+list<pair<int,int>> dll;  
+unordered_map<int, list<pair<int,int>> :: iterator> ma;
+
+LRUCache::LRUCache(int N)
+{
+    maxSize = N;
+    dll.clear();
+    ma.clear();
+}
+
+void LRUCache::set(int x, int y) 
+{
+    //Here  least recently used eleemnts are present at the back of the dll
+    auto it = ma.find(x);
+     if(it == ma.end()) // given pair is not present 
+    {
+       if(dll.size() == maxSize)  // size is full
+       {
+           // delete Lest Recently used element(back) from dll and remove entry hash table;
+           auto L_key = dll.back().first;
+           dll.pop_back();
+           ma.erase(L_key);
+       }
+    }
+    else // existing pair
+    {   
+        //delete existing pair from dll and remove entry hash table;
+        dll.erase(it->second);
+        ma.erase(x);
+    }
+    
+    //Finally add the given pair  to front of dll and update the same in hash table
+    dll.push_front({x,y});
+    ma[x]=dll.begin();
+}
+int LRUCache::get(int x)
+{
+    if(ma.find(x) == ma.end()) // not present
+    {
+        return -1;
+    }
+    // existing pair - delete current pair and bring it to front of DLL and update same in hash tabe
+    auto it = ma.find(x);
+    int d  = (*(it->second)).second;
+    dll.erase(it->second);
+    dll.push_front({x,d});
+    ma[x] = dll.begin();
+    return d;
+}
+
+83)Largest rectangle in histogram
+--------------------------------------------
+TC:O(n) //worst case o(2n)
+
+int getMaxArea(int hist[], int n) 
+{ 
+	// Create an empty stack. The stack holds indexes 
+	// of hist[] array. The bars stored in stack are 
+	// always in increasing order of their heights. 
+	stack<int> s; 
+
+	int max_area = 0; // Initialize max area 
+	int tp; // To store top of stack 
+	int area_with_top; // To store area with top bar 
+					// as the smallest bar 
+
+	// Run through all bars of given histogram 
+	int i = 0; 
+	while (i < n) 
+	{ 
+		// If this bar is higher than the bar on top 
+		// stack, push it to stack 
+		if (s.empty() || hist[s.top()] <= hist[i]) 
+			s.push(i++); 
+
+		// If this bar is lower than top of stack, 
+		// then calculate area of rectangle with stack 
+		// top as the smallest (or minimum height) bar. 
+		// 'i' is 'right index' for the top and element 
+		// before top in stack is 'left index' 
+		else
+		{ 
+			tp = s.top(); // store the top index 
+			s.pop(); // pop the top 
+
+			// Calculate the area with hist[tp] stack 
+			// as smallest bar 
+			area_with_top = hist[tp] * (s.empty() ? i : 
+								i - s.top() - 1); 
+
+			// update max area, if needed 
+			if (max_area < area_with_top) 
+				max_area = area_with_top; 
+		} 
+	} 
+
+	// Now pop the remaining bars from stack and calculate 
+	// area with every popped bar as the smallest bar 
+	while (s.empty() == false) 
+	{ 
+		tp = s.top(); 
+		s.pop(); 
+		area_with_top = hist[tp] * (s.empty() ? i : 
+								i - s.top() - 1); 
+
+		if (max_area < area_with_top) 
+			max_area = area_with_top; 
+	} 
+
+	return max_area; 
+} 
+
+Input: [2,1,5,6,2,3]
+Output: 10
+
+Ref:https://youtu.be/RVIh0snn4Qc
+
+84)Sliding Window Maximum
+-----------------------------------------------------
+TC:O(n)		SC:O(k)//k is capacity of the window
+
+
+void printKMax(int arr[], int n, int k) 
+{ 
+	// Create a Double Ended Queue, Qi that will store indexes of array elements 
+	// The queue will store indexes of useful elements in every window and it will 
+	// maintain decreasing order of values from front to rear in Qi, i.e., 
+	// arr[Qi.front[]] to arr[Qi.rear()] are sorted in decreasing order 
+	std::deque<int> Qi(k); 
+
+	/* Process first k (or first window) elements of array */
+	int i; 
+	for (i = 0; i < k; ++i) { 
+		// For every element, the previous smaller elements are useless so 
+		// remove them from Qi 
+		while ((!Qi.empty()) && arr[i] >= arr[Qi.back()]) 
+			Qi.pop_back(); // Remove from rear 
+
+		// Add new element at rear of queue 
+		Qi.push_back(i); 
+	} 
+
+	// Process rest of the elements, i.e., from arr[k] to arr[n-1] 
+	for (; i < n; ++i) { 
+		// The element at the front of the queue is the largest element of 
+		// previous window, so print it 
+		cout << arr[Qi.front()] << " "; 
+
+		// Remove the elements which are out of this window 
+		while ((!Qi.empty()) && Qi.front() <= i - k) 
+			Qi.pop_front(); // Remove from front of queue 
+
+		// Remove all elements smaller than the currently 
+		// being added element (remove useless elements) 
+		while ((!Qi.empty()) && arr[i] >= arr[Qi.back()]) 
+			Qi.pop_back(); 
+
+		// Add current element at the rear of Qi 
+		Qi.push_back(i); 
+	} 
+
+	// Print the maximum element of last window 
+	cout << arr[Qi.front()]; 
+} 
+
+/*First for loop can be avoided... by checking i>=k-1 before adding into the result vector or printing the answer*/
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        deque<int> buffer;
+        vector<int> res;
+
+        for(auto i=0; i<nums.size();++i)
+        {
+            while(!buffer.empty() && nums[i]>=nums[buffer.back()]) buffer.pop_back();
+            buffer.push_back(i);
+
+            if(i>=k-1) res.push_back(nums[buffer.front()]);
+            if(buffer.front()<= i-k + 1) buffer.pop_front();
+        }
+        return res;
+    }
+
+Input: nums = [1,3,-1,-3,5,3,6,7], and k = 3
+Output: [3,3,5,5,6,7] 
+
+85)Implement Min Stack
+---------------------------------------------
+TC:O(1)
+
+class MinStack {
+private:
+    stack<int> s1;
+    stack<int> s2;
+public:
+    void push(int x) {
+	    s1.push(x);
+	    if (s2.empty() || x <= getMin())  s2.push(x);	    
+    }
+    void pop() {
+	    if (s1.top() == getMin())  s2.pop();
+	    s1.pop();
+    }
+    int top() {
+	    return s1.top();
+    }
+    int getMin() {
+	    return s2.top();
+    }
+};
+
+86)Rotten Orange using (BFS)
+------------------------------------------------
+TC:O(r*c)	SC:(r*c)
+
+int orangesRotting(vector<vector<int>>& grid) {
+    //number of valid cells (cells with some orange)
+    int ct = 0;
+    //result
+    int res = -1;
+    //actually queue of pairs of coord i and j
+    queue<vector<int>> q;
+    
+    //ways to move
+    vector<vector<int>> dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    
+    //create staring nodes to queue to do bfs
+    for(int i = 0; i < grid.size(); i++) {
+        for(int j = 0; j < grid[0].size(); j++) {
+            //increasing number of valid cells
+            if(grid[i][j] > 0) 
+                ct++;
+            
+            //only rotten oranges must be on initial step of queue
+            if(grid[i][j] == 2) 
+                q.push({i, j});
+        }
+    }
+    
+    //bfs
+    while(!q.empty()) {
+        
+        //we do one step from rotten
+        res++;
+        
+        //see next comment
+        int size = q.size();
+        
+        //need to start from all rotten nodes at one moment 
+        for(int k = 0; k < size; k++) {
+            
+            //take node from head
+            vector<int> cur = q.front();
+            q.pop();
+            
+            //number of valid decreasing
+            ct--;
+            
+            //need to look through all four directions
+            for(int i = 0; i < 4; i++) {
+                //taking coords
+                int x = cur[0] + dir[i][0];
+                int y = cur[1] + dir[i][1];
+                
+                //if we go out of border or find non-fresh orange, we skip this iteration
+                if(x >= grid.size() || x < 0 || y >= grid[0].size() || y < 0 || grid[x][y] != 1) 
+                    continue;
+                
+                //orange becomes rotten
+                grid[x][y] = 2;
+                
+                //this orange will make neighbor orange rotten
+                q.push({x, y});
+            }
+        }
+    }
+    //if we looked through all oranges, return result, else -1
+    return (ct == 0) ? max(0, res) : -1;
+}
+
+Example 1:
+
+Input: [[2,1,1],[1,1,0],[0,1,1]]
+Output: 4
+
+Example 2:
+
+Input: [[2,1,1],[0,1,1],[1,0,1]]
+Output: -1
 
 
 
- 
+
+Strings
+========================================================
+87)Reverse Words in a String
+
+TC:O(n)		SC:O(1)
+
+
+class Solution {
+public:
+    string reverseWords(string  s) {
+        int i, len, start, end;
+        // remove leading spaces
+        for (i = 0; i < s.size() && ' ' == s[i]; i++)
+            ;
+        start = i;
+        // remove trailing spaces
+        for (i = s.size() - 1; i >= 0 && ' ' == s[i]; i--)
+            ;
+        end = i;
+        // remove multiple spaces btw. words
+        for (i = start, len = 0; i <= end; i++) {
+            if (' ' == s[i] && ' ' == s[i - 1])
+                continue;
+            s[len++] = s[i];
+        }
+        s.erase(s.begin() + len, s.end());
+
+        reverse(s.begin(), s.end());
+        for (i = 0, start = 0; i < s.size(); i++) {
+            if (s[i] == ' ') {
+                reverse(s.begin() + start, s.begin() + i);
+                start = i + 1;
+            }
+        }
+        // last word
+        reverse(s.begin() + start, s.end());
+        return s;
+    }
+};
+
+Example 1:
+
+Input: "the sky is blue"
+Output: "blue is sky the"
+
+Example 2:
+
+Input: "  hello world!  "
+Output: "world! hello"
+Explanation: Your reversed string should not contain leading or trailing spaces.
+
+Example 3:
+
+Input: "a good   example"
+Output: "example good a"
+Explanation: You need to reduce multiple spaces between two words to a single space in the reversed string.
+
+88)Longest Palindrome in a string
+-------------------------------------------------------------
+TC:O(n^2)	SC:O(n^2)
+
+//java solution be careful
+class Solution {
+    public String longestPalindrome(String s) {
+        if (s.length() <= 1)
+            return s;
+        
+        boolean[][] dp = new boolean[s.length()][s.length()];
+        
+        for (int i = 0; i < s.length(); i++)
+            dp[i][i] = true;
+        
+        int longestPalindromeStart = 0, longestPalindromeLength = 1;
+        for (int start = s.length() - 1; start >= 0; start--) {
+            for (int end = start + 1; end < s.length(); end++) {
+                if (s.charAt(start) == s.charAt(end)) {
+                    if (end - start == 1 || dp[start + 1][end - 1]) {
+                        dp[start][end] = true;
+                        if (longestPalindromeLength < end - start + 1) {
+                            longestPalindromeStart = start;
+                            longestPalindromeLength = end - start + 1;
+                        }
+                    }
+                }
+
+            }
+        }
+        
+        return s.substring(longestPalindromeStart, longestPalindromeStart + longestPalindromeLength);
+    }
+}
+
+Example 1:
+
+Input: "babad"
+Output: "bab"
+Note: "aba" is also a valid answer.
+
+Example 2:
+
+Input: "cbbd"
+Output: "bb"
+
+89)Roman Number to Integer and vice versa
+---------------------------------------------------
+
+Integer to roman:
+TC:O(n)		SC:O(1)//constant space
+/*
+Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
+
+Symbol       Value
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000
+
+For example, two is written as II in Roman numeral, just two one's added together. Twelve is written as, XII, which is simply X + II. The number twenty seven is written as XXVII, which is XX + V + II.
+
+Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not IIII. Instead, the number four is written as IV. Because the one is before the five we subtract it making four. The same principle applies to the number nine, which is written as IX. There are six instances where subtraction is used:
+
+    I can be placed before V (5) and X (10) to make 4 and 9. 
+    X can be placed before L (50) and C (100) to make 40 and 90. 
+    C can be placed before D (500) and M (1000) to make 400 and 900.
+
+Given an integer, convert it to a roman numeral. Input is guaranteed to be within the range from 1 to 3999.
+*/
+...........................................................
+
+class Solution {
+public:
+    string intToRoman(int num) 
+    {
+        string res;
+        string sym[] = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        int val[] = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        
+        for(int i=0; num != 0; i++)
+        {
+            while(num >= val[i])
+            {
+                num -= val[i];
+                res += sym[i];
+            }
+        }
+        
+        return res;
+    }
+};
+Example 1:
+
+Input: 3
+Output: "III"
+
+Example 2:
+
+Input: 4
+Output: "IV"
+
+Example 3:
+
+Input: 9
+Output: "IX"
+
+
+Roman to Integer:
+/*
+Time complexity: O(n).
+Space complexity: O(1).
+Time and Space complexity
+
+    We are iterating each letter of the given string, so Time complexity is O(n) where n is the length of the string.
+    We are using constant space, so Space complexity is O(1).
+*/
+..............................................................
+
+int romanToInt(string s) 
+{
+    unordered_map<char, int> T = { { 'I' , 1 },
+                                   { 'V' , 5 },
+                                   { 'X' , 10 },
+                                   { 'L' , 50 },
+                                   { 'C' , 100 },
+                                   { 'D' , 500 },
+                                   { 'M' , 1000 } };
+                                   
+   int sum = T[s.back()];
+   for (int i = s.length() - 2; i >= 0; --i) 
+   {
+       if (T[s[i]] < T[s[i + 1]])
+       {
+           sum -= T[s[i]];
+       }
+       else
+       {
+           sum += T[s[i]];
+       }
+   }
+   
+   return sum;
+}
+
+Example 1:
+
+Input: "III"
+Output: 3
+
+Example 2:
+
+Input: "IV"
+Output: 4
+
+90)String to Integer (atoi)
+------------------------------------------------------
+TC:O(n)		SC:O(1)
+
+atoi
+/*
+1. check NULL
+
+2. skip leading space
+
+3. handle negative sign '-'
+
+4. handle optional positive sign '+'
+
+5. handle non-digit character
+
+6. handle overflow
+
+7. handle underflow
+
+*/
+
+ int myAtoi(string str) {
+        long long int res = 0;
+        string trim = str;
+        bool sign = false;
+        
+        while(trim[0] == ' ')
+            trim.erase(trim.begin());
+        
+        if(trim[0] == '-' || trim[0] == '+')
+        {
+            if(trim[0] == '-')
+                sign = true;
+            trim.erase(trim.begin());
+        }
+        
+        for(char ch : trim)
+        {
+            if(!(ch >= '0' && ch <= '9'))
+                break;
+            
+            res = res*10 + (ch-'0');
+            if(res > INT_MAX)
+                return (sign ? INT_MIN : INT_MAX);
+        }
+        
+        if(sign)
+            res = -1*res;
+        return res;
+    }
+
+/*
+Example 1:
+
+Input: "42"
+Output: 42
+
+Example 2:
+
+Input: "   -42"
+Output: -42
+Explanation: The first non-whitespace character is '-', which is the minus sign.
+             Then take as many numerical digits as possible, which gets 42.
+
+Example 3:
+
+Input: "4193 with words"
+Output: 4193
+Explanation: Conversion stops at digit '3' as the next character is not a numerical digit.
+
+Example 4:
+
+Input: "words and 987"
+Output: 0
+Explanation: The first non-whitespace character is 'w', which is not a numerical 
+             digit or a +/- sign. Therefore no valid conversion could be performed.
+*/
+
+..........................................................
+Implement Strstr//Using two pointer algo
+TC:O(m*n) //m is the original string and n is the substring to be found
+SC:O(1)
+
+
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        int m = haystack.size(), n = needle.size();
+	if(m==0){return 0;}
+        for (int i = 0; i <= m - n; i++) {
+            int j = 0;
+            for (; j < n; j++) {
+                if (haystack[i + j] != needle[j]) {
+                    break;
+                }
+            }
+            if (j == n) {
+                return i;
+            }
+        }
+        return -1;
+    }
+};
+
+/*
+Implement strStr().
+
+Return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+
+Example 1:
+
+Input: haystack = "hello", needle = "ll"
+Output: 2
+
+Example 2:
+
+Input: haystack = "aaaaa", needle = "bba"
+Output: -1
+
+Clarification:
+
+What should we return when needle is an empty string? This is a great question to ask during an interview.
+
+For the purpose of this problem, we will return 0 when needle is an empty string. This is consistent to C's strstr() and Java's indexOf().
+
+*/
+91)Longest Common Prefix
+--------------------------------------
+TC:O(n*m)	SC:O(m)//to store the prefix result
+
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        if(strs.size() == 0) return "";
+        string prefix=strs[0];
+        for(int i=1;i<strs.size();i++){
+            while(strs[i].find(prefix)!=0)//str.find(prefix) returns the starting index of str if prefix is found in string str
+ 	    {
+                prefix=prefix.substr(0,prefix.size()-1);//chop off the last letter in the string
+            }
+        }
+        return prefix;
+        
+    }
+};
+
+Example 1:
+
+Input: ["flower","flow","flight"]
+Output: "fl"
+
+Example 2:
+
+Input: ["dog","racecar","car"]
+Output: ""
+Explanation: There is no common prefix among the input strings.
+
+91)Rabin-Karp//rolling hash function
+------------------------------------------------------------------
+TC:(n+m)
+
+drawback:Spurious Hits(hash function matches but pattern doesn't) /*TC:O(nm)*/
+This drawback can be overcome by using strong hash function
+
+/* Following program is a C++ implementation of Rabin Karp 
+Algorithm given in the CLRS book */
+#include <bits/stdc++.h> 
+using namespace std; 
+
+// d is the number of characters in the input alphabet 
+#define d 256 
+
+/* pat -> pattern 
+	txt -> text 
+	q -> A prime number 
+*/
+void search(char pat[], char txt[], int q) 
+{ 
+	int M = strlen(pat); 
+	int N = strlen(txt); 
+	int i, j; 
+	int p = 0; // hash value for pattern 
+	int t = 0; // hash value for txt 
+	int h = 1; 
+
+	// The value of h would be "pow(d, M-1)%q" 
+	for (i = 0; i < M - 1; i++) 
+		h = (h * d) % q; 
+
+	// Calculate the hash value of pattern and first 
+	// window of text 
+	for (i = 0; i < M; i++) 
+	{ 
+		p = (d * p + pat[i]) % q; 
+		t = (d * t + txt[i]) % q; 
+	} 
+
+	// Slide the pattern over text one by one 
+	for (i = 0; i <= N - M; i++) 
+	{ 
+
+		// Check the hash values of current window of text 
+		// and pattern. If the hash values match then only 
+		// check for characters on by one 
+		if ( p == t ) 
+		{ 
+			/* Check for characters one by one */
+			for (j = 0; j < M; j++) 
+			{ 
+				if (txt[i+j] != pat[j]) 
+					break; 
+			} 
+
+			// if p == t and pat[0...M-1] = txt[i, i+1, ...i+M-1] 
+			if (j == M) 
+				cout<<"Pattern found at index "<< i<<endl; 
+		} 
+
+		// Calculate hash value for next window of text: Remove 
+		// leading digit, add trailing digit 
+		if ( i < N-M ) 
+		{ 
+			t = (d*(t - txt[i]*h) + txt[i+M])%q; 
+
+			// We might get negative value of t, converting it 
+			// to positive 
+			if (t < 0) 
+			t = (t + q); 
+		} 
+	} 
+} 
+
+/* Driver code */
+int main() 
+{ 
+	char txt[] = "GEEKS FOR GEEKS"; 
+	char pat[] = "GEEK"; 
+	int q = 101; // A prime number 
+	search(pat, txt, q); 
+	return 0; 
+} 
+
+Input:  txt[] = "THIS IS A TEST TEXT"
+        pat[] = "TEST"
+Output: Pattern found at index 10
+
+Input:  txt[] =  "AABAACAADAABAABA"
+        pat[] =  "AABA"
+Output: Pattern found at index 0
+        Pattern found at index 9
+        Pattern found at index 12
+
+92)Prefix Function/Z-Function
+--------------------------------------------------------
+TC:O(m+n)	SC:O(m+n)
+package com.interview.string;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Date 10/31/2015
+ * @author Tushar Roy
+ *
+ * Z algorithm to pattern matching
+ *
+ * Time complexity - O(n + m)
+ * Space complexity - O(n + m)
+ *
+ * http://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
+ * http://www.utdallas.edu/~besp/demo/John2010/z-algorithm.htm
+ */
+public class ZAlgorithm {
+
+    private int[] calculateZ(char input[]) {
+        int Z[] = new int[input.length];
+        int left = 0;
+        int right = 0;
+        for(int k = 1; k < input.length; k++) {
+            if(k > right) {
+                left = right = k;
+                while(right < input.length && input[right] == input[right - left]) {
+                    right++;
+                }
+                Z[k] = right - left;
+                right--;
+            } else {
+                //we are operating inside box
+                int k1 = k - left;
+                //if value does not stretches till right bound then just copy it.
+                if(Z[k1] < right - k + 1) {
+                    Z[k] = Z[k1];
+                } else { //otherwise try to see if there are more matches.
+                    left = k;
+                    while(right < input.length && input[right] == input[right - left]) {
+                        right++;
+                    }
+                    Z[k] = right - left;
+                    right--;
+                }
+            }
+        }
+        return Z;
+    }
+
+    /**
+     * Returns list of all indices where pattern is found in text.
+     */
+    public List<Integer> matchPattern(char text[], char pattern[]) {
+        char newString[] = new char[text.length + pattern.length + 1];
+        int i = 0;
+        for(char ch : pattern) {
+            newString[i] = ch;
+            i++;
+        }
+        newString[i] = '$';
+        i++;
+        for(char ch : text) {
+            newString[i] = ch;
+            i++;
+        }
+        List<Integer> result = new ArrayList<>();
+        int Z[] = calculateZ(newString);
+
+        for(i = 0; i < Z.length ; i++) {
+            if(Z[i] == pattern.length) {
+                result.add(i - pattern.length - 1);
+            }
+        }
+        return result;
+    }
+
+    public static void main(String args[]) {
+        String text = "aaabcxyzaaaabczaaczabbaaaaaabc";
+        String pattern = "aaabc";
+        ZAlgorithm zAlgorithm = new ZAlgorithm();
+        List<Integer> result = zAlgorithm.matchPattern(text.toCharArray(), pattern.toCharArray());
+        result.forEach(System.out::println);
+    }
+}
+
+ref:https://www.youtube.com/watch?v=CpZh4eF8QBw
+
+93)KMP algo
+----------------------------------------------------
+TC:O(n+m)		SC:O(m)//m is pattern and n is the text
+// C++ program for implementation of KMP pattern searching 
+// algorithm 
+#include <bits/stdc++.h> 
+
+void computeLPSArray(char* pat, int M, int* lps); 
+
+// Prints occurrences of txt[] in pat[] 
+void KMPSearch(char* pat, char* txt) 
+{ 
+	int M = strlen(pat); 
+	int N = strlen(txt); 
+
+	// create lps[] that will hold the longest prefix suffix 
+	// values for pattern 
+	int lps[M]; 
+
+	// Preprocess the pattern (calculate lps[] array) 
+	computeLPSArray(pat, M, lps); 
+
+	int i = 0; // index for txt[] 
+	int j = 0; // index for pat[] 
+	while (i < N) { 
+		if (pat[j] == txt[i]) { 
+			j++; 
+			i++; 
+		} 
+
+		if (j == M) { 
+			printf("Found pattern at index %d ", i - j); 
+			j = lps[j - 1]; 
+		} 
+
+		// mismatch after j matches 
+		else if (i < N && pat[j] != txt[i]) { 
+			// Do not match lps[0..lps[j-1]] characters, 
+			// they will match anyway 
+			if (j != 0) 
+				j = lps[j - 1]; 
+			else
+				i = i + 1; 
+		} 
+	} 
+} 
+
+// Fills lps[] for given patttern pat[0..M-1] 
+void computeLPSArray(char* pat, int M, int* lps) 
+{ 
+	// length of the previous longest prefix suffix 
+	int len = 0; 
+
+	lps[0] = 0; // lps[0] is always 0 
+
+	// the loop calculates lps[i] for i = 1 to M-1 
+	int i = 1; 
+	while (i < M) { 
+		if (pat[i] == pat[len]) { 
+			len++; 
+			lps[i] = len; 
+			i++; 
+		} 
+		else // (pat[i] != pat[len]) 
+		{ 
+			// This is tricky. Consider the example. 
+			// AAACAAAA and i = 7. The idea is similar 
+			// to search step. 
+			if (len != 0) { 
+				len = lps[len - 1]; 
+
+				// Also, note that we do not increment 
+				// i here 
+			} 
+			else // if (len == 0) 
+			{ 
+				lps[i] = 0; 
+				i++; 
+			} 
+		} 
+	} 
+} 
+
+// Driver program to test above function 
+int main() 
+{ 
+	char txt[] = "ABABDABACDABABCABAB"; 
+	char pat[] = "ABABCABAB"; 
+	KMPSearch(pat, txt); 
+	return 0; 
+} 
+
+94)Minimum characters needed to be inserted in the beginning to make it palindromic.
+------------------------------------------------
+TC:O(n)
+
+// C++ program for getting minimum character to be 
+// added at front to make string palindrome 
+#include <bits/stdc++.h> 
+using namespace std; 
+
+// returns vector lps for given string str 
+vector<int> computeLPSArray(string str) 
+{ 
+	int M = str.length(); 
+	vector<int> lps(M); 
+
+	int len = 0; 
+	lps[0] = 0; // lps[0] is always 0 
+
+	// the loop calculates lps[i] for i = 1 to M-1 
+	int i = 1; 
+	while (i < M) 
+	{ 
+		if (str[i] == str[len]) 
+		{ 
+			len++; 
+			lps[i] = len; 
+			i++; 
+		} 
+		else // (str[i] != str[len]) 
+		{ 
+			// This is tricky. Consider the example. 
+			// AAACAAAA and i = 7. The idea is similar 
+			// to search step. 
+			if (len != 0) 
+			{ 
+				len = lps[len-1]; 
+
+				// Also, note that we do not increment 
+				// i here 
+			} 
+			else // if (len == 0) 
+			{ 
+				lps[i] = 0; 
+				i++; 
+			} 
+		} 
+	} 
+	return lps; 
+} 
+
+// Method returns minimum character to be added at 
+// front to make string palindrome 
+int getMinCharToAddedToMakeStringPalin(string str) 
+{ 
+	string revStr = str; 
+	reverse(revStr.begin(), revStr.end()); 
+
+	// Get concatenation of string, special character 
+	// and reverse string 
+	string concat = str + "$" + revStr; 
+
+	// Get LPS array of this concatenated string 
+	vector<int> lps = computeLPSArray(concat); 
+
+	// By subtracting last entry of lps vector from 
+	// string length, we will get our result 
+	return (str.length() - lps.back()); 
+} 
+
+// Driver program to test above functions 
+int main() 
+{ 
+	string str = "AACECAAAA"; 
+	cout << getMinCharToAddedToMakeStringPalin(str); 
+	return 0; 
+} 
+
+Input  : str = "ABC"
+Output : 2
+We can make above string palindrome as "CBABC"
+by adding 'B' and 'C' at front.
+
+Input  : str = "AACECAAAA";
+Output : 2
+We can make above string palindrome as AAAACECAAAA
+by adding two A's at front of string.
+
+ref:https://www.youtube.com/watch?v=c4akpqTwE5g
+
+95)Check for Anagrams
+----------------------------------------------
+TC:O(n)		SC:O(number of lowercase alphabets)//if special characters are included the we can use unordered map ,then SC:O(n)
+
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if (s.length() != t.length()) return false;
+        int n = s.length();
+        int counts[26] = {0};
+        for (int i = 0; i < n; i++) { 
+            counts[s[i] - 'a']++;
+            counts[t[i] - 'a']--;
+        }
+        for (int i = 0; i < 26; i++)
+            if (counts[i]) return false;
+        return true;
+    }
+};		
+
+Example 1:
+
+Input: s = "anagram", t = "nagaram"
+Output: true
+
+Example 2:
+
+Input: s = "rat", t = "car"
+Output: false
+
+96)Count and Say
+--------------------------------------
+TC:O(n*k)
+actually i think it is O(k*n) where k is the length of the previous sequence (different from n^2). Because the length of each string has nothing to do with the total number of strings. The author of cracking the coding interview made this distinction
+
+string countAndSay(int n) {
+    if (n == 0) return "";
+    string res = "1";
+    while (--n) {
+        string cur = "";
+        for (int i = 0; i < res.size(); i++) {
+            int count = 1;
+             while ((i + 1 < res.size()) && (res[i] == res[i + 1])){
+                count++;    
+                i++;
+            }
+            cur += to_string(count) + res[i];
+        }
+        res = cur;
+    }
+    return res;
+}
+
+output:
+Example 1:
+
+Input: 1
+Output: "1"
+Explanation: This is the base case.
+
+Example 2:
+
+Input: 4
+Output: "1211"
+Explanation: For n = 3 the term was "21" in which we have two groups "2" and "1", "2" can be read as "12" which means frequency = 1 and value = 2, the same way "1" is read as "11", so the answer is the concatenation of "12" and "11" which is "1211".
+
+97)Compare version numbers
+--------------------------------------------------
+TC:O(num1+num2) 	SC:O(1)
+
+Compare two version numbers version1 and version2.
+If version1 > version2 return 1; if version1 < version2 return -1;otherwise return 0.
+
+int compareVersion(string version1, string version2) {
+    int i = 0; 
+    int j = 0;
+    int n1 = version1.size(); 
+    int n2 = version2.size();
+    
+    int num1 = 0;
+    int num2 = 0;
+    while(i<n1 || j<n2)
+    {
+        while(i<n1 && version1[i]!='.'){
+            num1 = num1*10+(version1[i]-'0');
+            i++;
+        }
+        cout<<num1<<"\n";
+        
+        while(j<n2 && version2[j]!='.'){
+            num2 = num2*10+(version2[j]-'0');;
+            j++;
+        }
+        cout<<num2<<"\n";
+        if(num1>num2) return 1;
+        else if(num1 < num2) return -1;
+        
+        num1 = 0;
+        num2 = 0;
+        i++;
+        j++;
+    }
+    
+    return 0;
+}
+
+Example 1:
+
+Input: version1 = "0.1", version2 = "1.1"
+Output: -1
+
+Example 2:
+
+Input: version1 = "1.0.1", version2 = "1"
+Output: 1
+
+Example 3:
+
+Input: version1 = "7.5.2.4", version2 = "7.5.3"
+Output: -1
+
+Example 4:
+
+Input: version1 = "1.01", version2 = "1.001"
+Output: 0
+Explanation: Ignoring leading zeroes, both “01” and “001" represent the same number “1”
+
+Example 5:
+
+Input: version1 = "1.0", version2 = "1.0.0"
+Output: 0
+Explanation: The first version number does not have a third level revision number, which means its third level revision number is default to "0"
+
+Binary tree
+=============================================================
+/*
+FOR INORDER,PREORDER,POSTORDER
+TC:O(n)		SC:O(n)//sometimes height of the tree
+*/
+98)Inorder traversal	
+<left> <root> <right>
+
+Recursive:
+void printInorder(struct Node* node) 
+{ 
+    if (node == NULL) 
+        return; 
+  
+    /* first recur on left child */
+    printInorder(node->left); 
+  
+    /* then print the data of node */
+    cout << node->data << " "; 
+  
+    /* now recur on right child */
+    printInorder(node->right); 
+} 
+
+Non recursive:
+// C++ program to print inorder traversal 
+// using stack. 
+#include<bits/stdc++.h> 
+using namespace std; 
+
+/* A binary tree Node has data, pointer to left child 
+and a pointer to right child */
+struct Node 
+{ 
+	int data; 
+	struct Node* left; 
+	struct Node* right; 
+	Node (int data) 
+	{ 
+		this->data = data; 
+		left = right = NULL; 
+	} 
+}; 
+
+/* Iterative function for inorder tree 
+traversal */
+void inOrder(struct Node *root) 
+{ 
+	stack<Node *> s; 
+	Node *curr = root; 
+
+	while (curr != NULL || s.empty() == false) 
+	{ 
+		/* Reach the left most Node of the 
+		curr Node */
+		while (curr != NULL) 
+		{ 
+			/* place pointer to a tree node on 
+			the stack before traversing 
+			the node's left subtree */
+			s.push(curr); 
+			curr = curr->left; 
+		} 
+
+		/* Current must be NULL at this point */
+		curr = s.top(); 
+		s.pop(); 
+
+		cout << curr->data << " "; 
+
+		/* we have visited the node and its 
+		left subtree. Now, it's right 
+		subtree's turn */
+		curr = curr->right; 
+
+	} /* end of while */
+} 
+
+/* Driver program to test above functions*/
+int main() 
+{ 
+
+	/* Constructed binary tree is 
+	       	   1 
+		  / \ 
+		 2   3 
+		/ \ 
+	       4   5 
+	*/
+	struct Node *root = new Node(1); 
+	root->left	 = new Node(2); 
+	root->right	 = new Node(3); 
+	root->left->left = new Node(4); 
+	root->left->right = new Node(5); 
+
+	inOrder(root); 
+	return 0; 
+} 
+
+output: 4 2 5 1 3
+
+98)Preorder Traversal
+<root><left><right>
+Recursive:
+void printPreorder(struct Node* node) 
+{ 
+    if (node == NULL) 
+        return; 
+  
+    /* first print data of node */
+    cout << node->data << " "; 
+  
+    /* then recur on left sutree */
+    printPreorder(node->left);  
+  
+    /* now recur on right subtree */
+    printPreorder(node->right); 
+}  
+Non- Recursive:
+void iterativePreorder(node *root) 
+{ 
+    // Base Case 
+    if (root == NULL) 
+       return; 
+  
+    // Create an empty stack and push root to it 
+    stack<node *> nodeStack; 
+    nodeStack.push(root); 
+  
+    /* Pop all items one by one. Do following for every popped item 
+       a) print it 
+       b) push its right child 
+       c) push its left child 
+    Note that right child is pushed first so that left is processed first */
+    while (nodeStack.empty() == false) 
+    { 
+        // Pop the top item from stack and print it 
+        struct node *node = nodeStack.top(); 
+        printf ("%d ", node->data); 
+        nodeStack.pop(); 
+  
+        // Push right and left children of the popped node to stack 
+        if (node->right) 
+            nodeStack.push(node->right); 
+        if (node->left) 
+            nodeStack.push(node->left); 
+    } 
+} 
+
+99)PostOrder Traversal
+<left><right><root>
+Recursive:
+void printPostorder(struct Node* node) 
+{ 
+    if (node == NULL) 
+        return; 
+  
+    // first recur on left subtree 
+    printPostorder(node->left); 
+  
+    // then recur on right subtree 
+    printPostorder(node->right); 
+  
+    // now deal with the node 
+    cout << node->data << " "; 
+} 
+
+Non-Recursive:
+TC:O(n)		SC:O(height of the stack)
+Using two stack:
+--------------------------------
+ public void postOrderItr(Node root){
+        Deque<Node> stack1 = new LinkedList<Node>();
+        Deque<Node> stack2 = new LinkedList<Node>();
+        stack1.addFirst(root);
+        while(!stack1.isEmpty()){
+            root = stack1.pollFirst();
+            if(root.left != null){
+                stack1.addFirst(root.left);
+            }
+            if(root.right != null){
+                stack1.addFirst(root.right);
+            }
+            stack2.addFirst(root);
+        }
+        while(!stack2.isEmpty()){
+            System.out.print(stack2.pollFirst().data + " ");
+        }
+    }
+Using one stack:
+-----------------------------------------
+    public void postOrderItrOneStack(Node root){
+        Node current = root;
+        Deque<Node> stack = new LinkedList<>();
+        while(current != null || !stack.isEmpty()){
+            if(current != null){
+                stack.addFirst(current);
+                current = current.left;
+            }else{
+                Node temp = stack.peek().right;
+                if (temp == null) {
+                    temp = stack.poll();
+                    System.out.print(temp.data + " ");
+                    while (!stack.isEmpty() && temp == stack.peek().right) {
+                        temp = stack.poll();
+                        System.out.print(temp.data + " ");
+                    }
+                } else {
+                    current = temp;
+                }
+            }
+        }
+    }
+
+100)LeftView Of Binary Tree
+------------------------------------------
+TC:O(n)		SC:O(n)
+void leftViewUtil(struct node* root, queue<node*>& q) 
+{ 
+    if (root == NULL) 
+        return; 
+  
+    // Push root 
+    q.push(root); 
+  
+    // Delimiter 
+    q.push(NULL); 
+  
+    while (!q.empty()) { 
+        node* temp = q.front(); 
+  
+        if (temp) { 
+  
+            // Prints first node 
+            // of each level 
+            cout << temp->data << " "; 
+  
+            // Push children of all nodes at 
+            // current level 
+            while (q.front() != NULL) { 
+  
+                // If left child is present 
+                // push into queue 
+                if (temp->left) 
+                    q.push(temp->left); 
+  
+                // If right child is present 
+                // push into queue 
+                if (temp->right) 
+                    q.push(temp->right); 
+  
+                // Pop the current node 
+                q.pop(); 
+  
+                temp = q.front(); 
+            } 
+  
+            // Push delimiter 
+            // for the next level 
+            q.push(NULL); 
+        } 
+  
+        // Pop the delimiter of 
+        // the previous level 
+        q.pop(); 
+    } 
+} 
+
+Recursive:
+TC:O(n)		SC:O(n)
+.........................................
+void leftViewUtil(node* root, int level, int* max_level) 
+{ 
+    // Base Case 
+    if (root == NULL) 
+        return; 
+  
+    // If this is the first node of its level 
+    if (*max_level < level) { 
+        cout << root->data << "\t"; 
+        *max_level = level; 
+    } 
+  
+    // Recur for left and right subtrees 
+    leftViewUtil(root->left, level + 1, max_level); 
+    leftViewUtil(root->right, level + 1, max_level); 
+} 
+
+101)Bottom View of Binary Tree
+---------------------------------------------
+TC:O(n)		SC:O(n+n)=>O(n)
+
+void bottomView(Node *root)
+{
+    // TreeMap which stores key value pair 
+    // sorted on key value 
+    map<int,int>mp;
+	// Queue to store tree nodes in level 
+    	// order traversal 
+   	queue<pair<Node *,int > >q;
+	// Initialize a variable 'hd' with 0 
+    	// for the root element. 
+	int d=0;
+	if(root==NULL)
+	return ;
+	// Assign initialized horizontal distance 
+    	// value to root node and add it to the queue. 
+	q.push(make_pair(root,d));
+	while(!q.empty())
+	{
+		pair<Node *,int> p = q.front();
+		q.pop();// In STL, pop() is used dequeue an item 
+		struct Node *cur = p.first;
+		// Extract the horizontal distance value 
+        	// from the dequeued tree node. 
+		int val = p.second;
+        	// Put the dequeued tree node to TreeMap 
+        	// having key as horizontal distance. Every 
+        	// time we find a node having same horizontal 
+        	// distance we need to replace the data in 
+       		// the map. 
+		mp[val] = cur->data;
+	        // If the dequeued node has a left child, add 
+        	// it to the queue with a horizontal distance hd-1. 
+		if(cur->left!=NULL)
+		{
+			q.push(make_pair(cur->left,val-1));
+		}
+		// If the dequeued node has a right child, add 
+        	// it to the queue with a horizontal distance 
+        	// hd+1. 
+		if(cur->right !=NULL)
+		{
+			q.push(make_pair(cur->right,val+1));
+		}
+	}
+		map<int ,int >::iterator it;
+	for(it=mp.begin();it!=mp.end();it++)
+	{
+		cout<<it->second<<" ";
+	}
+}
+Ref:https://www.youtube.com/watch?v=FPPkYYWZTkg
+
+102)TopView of binary Tree
+----------------------------------------------
+TC:O(n)		SC:O(n)
+
+void topView(struct Node *root)
+{
+     // TreeMap which stores key value pair 
+     // sorted on key value 
+    map<int,int>mp;
+	// Queue to store tree nodes in level 
+    	// order traversal 
+   	queue<pair<struct Node *,int > >q;
+	// Initialize a variable 'hd' with 0 
+    	// for the root element. 
+	int d=0;
+	if(root==NULL)
+	return ;
+	// Assign initialized horizontal distance 
+    	// value to root node and add it to the queue. 
+	q.push(make_pair(root,d));
+	while(!q.empty())
+	{
+		pair<Node *,int> p = q.front();
+		q.pop();// In STL, pop() is used dequeue an item 
+		struct Node *cur = p.first;
+		// Extract the horizontal distance value 
+        	// from the dequeued tree node. 
+		int val = p.second;
+                // count function returns 1 if the container  
+                // contains an element whose key is equivalent  
+                // to hd, or returns zero otherwise. 
+       		if(mp.count(val)==0)
+		{mp[val] = cur->data;}
+	        // If the dequeued node has a left child, add 
+        	// it to the queue with a horizontal distance hd-1. 
+		if(cur->left!=NULL)
+		{
+			q.push(make_pair(cur->left,val-1));
+		}
+		// If the dequeued node has a right child, add 
+        	// it to the queue with a horizontal distance 
+        	// hd+1. 
+		if(cur->right !=NULL)
+		{
+			q.push(make_pair(cur->right,val+1));
+		}
+	}
+		map<int ,int >::iterator it;
+	for(it=mp.begin();it!=mp.end();it++)
+	{
+		cout<<it->second<<" ";
+	}
+}
+103)Level order traversal
+----------------------------------------------
+TC:O(n)		SC:O(n)
+void printLevelOrder(Node *root) 
+{ 
+    // Base Case 
+    if (root == NULL)  return; 
+  
+    // Create an empty queue for level order traversal 
+    queue<Node *> q; 
+  
+    // Enqueue Root and initialize height 
+    q.push(root); 
+  
+    while (q.empty() == false) 
+    { 
+        // Print front of queue and remove it from queue 
+        Node *node = q.front(); 
+        cout << node->data << " "; 
+        q.pop(); 
+  
+        /* Enqueue left child */
+        if (node->left != NULL) 
+            q.push(node->left); 
+  
+        /*Enqueue right child */
+        if (node->right != NULL) 
+            q.push(node->right); 
+    } 
+} 
+
+LevelOrderSpiral printing:
+-----------------------------------------------
+
+void printSpiral(struct node* root) 
+{ 
+    if (root == NULL) 
+        return; // NULL check 
+  
+    // Create two stacks to store alternate levels 
+    stack<struct node*> s1; // For levels to be printed from right to left 
+    stack<struct node*> s2; // For levels to be printed from left to right 
+  
+    // Push first level to first stack 's1' 
+    s1.push(root); 
+  
+    // Keep printing while any of the stacks has some nodes 
+    while (!s1.empty() || !s2.empty()) { 
+        // Print nodes of current level from s1 and push nodes of 
+        // next level to s2 
+        while (!s1.empty()) { 
+            struct node* temp = s1.top(); 
+            s1.pop(); 
+            cout << temp->data << " "; 
+  
+            // Note that is right is pushed before left 
+            if (temp->right) 
+                s2.push(temp->right); 
+            if (temp->left) 
+                s2.push(temp->left); 
+        } 
+  
+        // Print nodes of current level from s2 and push nodes of 
+        // next level to s1 
+        while (!s2.empty()) { 
+            struct node* temp = s2.top(); 
+            s2.pop(); 
+            cout << temp->data << " "; 
+  
+            // Note that is left is pushed before right 
+            if (temp->left) 
+                s1.push(temp->left); 
+            if (temp->right) 
+                s1.push(temp->right); 
+        } 
+    } 
+} 
+
+104)Height of a Binary Tree
+-----------------------------------------
+Recursive:
+TC:o(n)		SC:O(n)
+int height(node* root)
+{
+if(root==NULL)
+return 0;
+return max(height(root->left),height(root->right))+1;
+}
+.........................................
+
+Iterative approach:
+TC:O(n)		SC:O(n)
+int treeHeight(node *root) 
+{ 
+    // Base Case 
+    if (root == NULL) 
+        return 0; 
+  
+    // Create an empty queue for level order tarversal 
+    queue<node *> q; 
+  
+    // Enqueue Root and initialize height 
+    q.push(root); 
+    int height = 0; 
+  
+    while (1) 
+    { 
+        // nodeCount (queue size) indicates number of nodes 
+        // at current lelvel. 
+        int nodeCount = q.size(); 
+        if (nodeCount == 0) 
+            return height; 
+  
+        height++; 
+  
+        // Dequeue all nodes of current level and Enqueue all 
+        // nodes of next level 
+        while (nodeCount > 0) 
+        { 
+            node *node = q.front(); 
+            q.pop(); 
+            if (node->left != NULL) 
+                q.push(node->left); 
+            if (node->right != NULL) 
+                q.push(node->right); 
+            nodeCount--; 
+        } 
+    } 
+} 
+
+105)Diameter of a tree
+-----------------------------------
+TC:O(n)		SC:O(1)
+
+/* Function to find height of a tree */
+int height(Node* root, int& ans) 
+{ 
+    if (root == NULL) 
+        return 0; 
+  
+    int left_height = height(root->left, ans); 
+  
+    int right_height = height(root->right, ans); 
+  
+    // update the answer, because diameter of a 
+    // tree is nothing but maximum value of 
+    // (left_height + right_height + 1) for each node 
+    ans = max(ans, 1 + left_height + right_height); 
+  
+    return 1 + max(left_height, right_height); 
+} 
+  
+/* Computes the diameter of binary tree with given root. */
+int diameter(Node* root) 
+{ 
+    if (root == NULL) 
+        return 0; 
+    int ans = INT_MIN; // This will store the final answer 
+    int height_of_tree = height(root, ans); 
+    return ans; 
+} 
+
+ref:https://www.youtube.com/watch?v=kFuYJi-Pvyg
+
+106)Check if Binary tree is height balanced or not //AVL tree
+------------------------------------------
+TC:O(n)		SC:O(1)
+int ifHeightBalancedTree(Node *node) {
+    if (node == NULL) {
+      return 0;
+    }
+    
+    if(node->left == NULL && node->right == NULL) {
+      return 1;
+    }
+
+    int lH = ifHeightBalancedTree(node->left);
+    int rH = ifHeightBalancedTree(node->right);
+    
+    if(lH == -1 || rH == -1 || abs(lH - rH) > 1) {
+      return -1;
+    }
+
+    return max(lH, rH) + 1;
+  }
