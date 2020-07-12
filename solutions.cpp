@@ -114,8 +114,42 @@ Output:
 2 1
 3 2
 
-Doubt:https://www.geeksforgeeks.org/find-a-repeating-and-a-missing-number/
-Method-5 TC:O(n) SC:O(1)
+..............................................
+TC:O(n)		SC:O(1)
+/*
+    Let x be the missing and y be the repeating element.
+    Let N is the size of array.
+    Get the sum of all numbers using formula S = N(N+1)/2
+    Get product of all numbers using formula Sum_Sq = N(N+1)(2N+1)/6
+    Iterate through a loop from i=1….N
+    S -= A[i]
+    Sum_Sq -= (A[i]*A[i])
+    It will give two equations
+
+    x-y = S – (1)
+    x^2 – y^2 = Sum_sq
+    x+ y = (Sum_sq/S) – (2)
+*/
+
+vector<int>repeatedNumber(const vector<int> &A) { 
+    long long int len = A.size(); 
+    long long int Sum_N = (len * (len+1) ) /2, Sum_NSq = (len * (len +1) *(2*len +1) )/6; 
+    long long int missingNumber=0, repeating=0; 
+      
+    for(int i=0;i<A.size(); i++){ 
+       Sum_N -= (long long int)A[i]; 
+       Sum_NSq -= (long long int)A[i]*(long long int)A[i]; 
+    } 
+      
+    missingNumber = (Sum_N + Sum_NSq/Sum_N)/2; 
+    repeating= missingNumber - Sum_N; 
+    vector <int> ans; 
+    ans.push_back(repeating); 
+    ans.push_back(missingNumber); 
+    return ans; 
+      
+} 
+
 
 4)Efficiently merging two sorted arrays with O(1) extra space
 ------------------------------------------------------------
@@ -956,9 +990,17 @@ Explation of algorithm:
 
 For example, the input is "aba", you check dict[s[0]], which is dict[97] is -1. Therefore, you can change the dict[97] to 0. In this way, you keep recording the string char's position in the dict. When you meet the second "a" in the input, dict[97] is 0 and larger than start, which is -1. Then you change start value to 0. When you apply length function ( i - start), you calculate the new substring length, which didn't contain the substring before the first "a".
 
-23)DO AGAIN******************************************************************************
-
-Count number of subarrays with given XOR
+23)Count number of subarrays with given XOR
+--------------------------------------------
+/*
+Input : arr[] = {4, 2, 2, 6, 4}, m = 6
+Output : 4
+Explanation : The subarrays having XOR of 
+              their elements as 6 are {4, 2}, 
+              {4, 2, 2, 6, 4}, {2, 2, 6},
+               and {6}
+*/
+TC:O(n^2) 	SC:O(1)
 
 long long subarrayXor(int arr[], int n, int m) 
 { 
@@ -982,6 +1024,51 @@ long long subarrayXor(int arr[], int n, int m)
     return ans; 
 } 
 
+TC:O(n)		SC:O(n)
+..............................................
+long long subarrayXor(int arr[], int n, int m) 
+{ 
+    long long ans = 0; // Initialize answer to be returned 
+  
+    // Create a prefix xor-sum array such that 
+    // xorArr[i] has value equal to XOR 
+    // of all elements in arr[0 ..... i] 
+    int* xorArr = new int[n]; 
+  
+    // Create map that stores number of prefix array 
+    // elements corresponding to a XOR value 
+    unordered_map<int, int> mp; 
+  
+    // Initialize first element of prefix array 
+    xorArr[0] = arr[0]; 
+  
+    // Computing the prefix array. 
+    for (int i = 1; i < n; i++) 
+        xorArr[i] = xorArr[i - 1] ^ arr[i]; 
+  
+    // Calculate the answer 
+    for (int i = 0; i < n; i++) { 
+        // Find XOR of current prefix with m. 
+        int tmp = m ^ xorArr[i]; 
+  
+        // If above XOR exists in map, then there 
+        // is another previous prefix with same 
+        // XOR, i.e., there is a subarray ending 
+        // at i with XOR equal to m. 
+        ans = ans + ((long long)mp[tmp]); 
+  
+        // If this subarray has XOR equal to m itself. 
+        if (xorArr[i] == m) 
+            ans++; 
+  
+        // Add the XOR of this subarray to the map 
+        mp[xorArr[i]]++; 
+    } 
+  
+    // Return total count of subarrays having XOR of 
+    // elements as given value m 
+    return ans; 
+} 
 Linked list
 ======================================================
 24)Reverse a LinkedList:
@@ -1145,6 +1232,7 @@ Output: 1->1->2->3->4->4
 TC:O(n)		SC:O(1)
  Node* deleteNode(int key) 
     { 
+  
         // First pointer will point to 
         // the head of the linked list 
         Node *first = head; 
@@ -1883,7 +1971,7 @@ Output: 6
 Trap "1 unit" between first 1 and 2, "4 units" between
 first 2 and 3 and "1 unit" between second last 1 and last 2 
 
-42)Remove Duplicate from Sorted array
+41)Remove Duplicate from Sorted array
 --------------------------------------------------------
 TC:O(n)		SC:O(1)
 
@@ -1931,7 +2019,7 @@ Input  : arr[] = {1, 2, 2, 3, 4, 4, 4, 5, 5}
 Output : arr[] = {1, 2, 3, 4, 5}
          new size = 5
 
-43)Max continuous number of 1’s
+42)Max continuous number of 1’s
 -----------------------------------------------------------
 TC:O(n)		SC:O(1)
 
@@ -1958,12 +2046,14 @@ int getMaxLength(bool arr[], int n)
   
     return result; 
 } 
+
 Input  : arr[] = {1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1}
 Output : 4
 
 Input  : arr[] = {0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1}
 Output : 1
 
+43)Go through Puzzles from GFG (Search on own)
 GREEDY 
 =================================================
 44)N meeting in one room
@@ -4931,9 +5021,6 @@ Example 2:
 Input: [[2,1,1],[0,1,1],[1,0,1]]
 Output: -1
 
-
-
-
 Strings
 ========================================================
 87)Reverse Words in a String
@@ -6390,3 +6477,2579 @@ int ifHeightBalancedTree(Node *node) {
 
     return max(lH, rH) + 1;
   }
+107)LCA in Binary Tree
+-------------------------------------------------
+According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).
+TC:O(n)		SC:O(h)//worst case O(n)
+/*
+
+  *  All of the nodes' values will be unique.
+  *  p and q are different and both values will exist in the binary tree.
+
+*/
+TreeNode * dfsTraverse(TreeNode * root, TreeNode * p , TreeNode * q)
+{
+    if( root == p || root == q || root == NULL)
+        return root;
+    TreeNode * parent1 = dfsTraverse(root->left, p, q);
+    TreeNode * parent2 = dfsTraverse(root->right, p, q);
+    if( parent1 && parent2)
+        return root;
+    else
+        return parent1 ? parent1:parent2;
+}
+TreeNode * lowestCommonAncestor(TreeNode * root, TreeNode * p, TreeNode * q)
+{
+    return dfsTraverse(root, p, q);
+}
+
+/*
+I was asked this question in an interview, with 2 special conditions as the follow-up:
+1. The given 2 TreeNodes are NOT guaranteed to be on the tree. 
+2. If either or neither of them is on the tree, it is required to return null*/
+
+  boolean ifN1Present = false;
+  boolean ifN2Present = false;
+
+  public Node findLowestCommonAncestor(Node node, int n1, int n2) {
+
+    Node lca = this.findLowestCommonAncestorUtil(node, n1, n2);
+
+    if (ifN1Present && ifN2Present) {
+      return lca;
+    } else if (!ifN1Present && !ifN2Present) {
+      return null;
+    } else {
+      int val = lca.data == n1 ? n2 : n1;
+      if (ifElementPresent(lca, val)) {
+        return lca;
+      }
+    }
+
+    return null;
+  }
+
+  public Node findLowestCommonAncestorUtil(Node node, int n1, int n2) {
+    if (node == null) {
+      return null;
+    }
+
+    if (node.data == n1) {
+      ifN1Present = true;
+      return node;
+    }
+
+    if (node.data == n2) {
+      ifN2Present = true;
+      return node;
+    }
+
+    Node leftLCA = findLowestCommonAncestorUtil(node.left, n1, n2);
+    Node rightLCA = findLowestCommonAncestorUtil(node.right, n1, n2);
+
+    if (leftLCA != null && rightLCA != null) {
+      return node;
+    }
+
+    return leftLCA != null ? leftLCA : rightLCA;
+  }
+
+  private boolean ifElementPresent(Node node, int val) {
+    if (node == null) {
+      return false;
+    }
+
+    if (node.data == val) {
+      return true;
+    }
+
+    return ifElementPresent(node.left, val) || ifElementPresent(node.right, val);
+  }
+
+108)Check if two trees are identical or not
+------------------------------------------
+TC:O(n)		SC:O(h)//worst case O(n)
+
+int identicalTrees(node* a, node* b)  
+{  
+    /*1. both empty */
+    if (a == NULL && b == NULL)  
+        return 1;  
+  
+    /* 2. both non-empty -> compare them */
+    if (a != NULL && b != NULL)  
+    {  
+        return
+        (  
+            a->data == b->data &&  
+            identicalTrees(a->left, b->left) &&  
+            identicalTrees(a->right, b->right)  
+        );  
+    }  
+      
+    /* 3. one empty, one not -> false */
+    return 0;  
+}
+
+109)Maximum path sum
+------------------------
+TC:O(n)		SC:O(n)//without considering stack space then SC:O(1)
+
+// This function returns overall maximum path sum in 'res' 
+// And returns max path sum going through root. 
+int findMaxUtil(Node* root, int &res) 
+{ 
+    //Base Case 
+    if (root == NULL) 
+        return 0; 
+  
+    // l and r store maximum path sum going through left and 
+    // right child of root respectively 
+    int l = findMaxUtil(root->left,res); 
+    int r = findMaxUtil(root->right,res); 
+  
+    // Max path for parent call of root. This path must 
+    // include at-most one child of root 
+    int max_single = max(max(l, r) + root->data, root->data); 
+  
+    // Max Top represents the sum when the Node under 
+    // consideration is the root of the maxsum path and no 
+    // ancestors of root are there in max sum path 
+    int max_top = max(max_single, l + r + root->data); 
+  
+    res = max(res, max_top); // Store the Maximum Result. 
+  
+    return max_single; 
+} 
+
+110)Construct Binary Tree from inorder and preorder
+-------------------------
+TC:O(n)	SC:O(n)
+
+/* Recursive function to construct binary of size 
+len from Inorder traversal in[] and Preorder traversal  
+pre[]. Initial values of inStrt and inEnd should be  
+0 and len -1. The function doesn't do any error  
+checking for cases where inorder and preorder  
+do not form a tree */
+struct Node* buildTree(char in[], char pre[], int inStrt, 
+                       int inEnd, unordered_map<char, int>& mp) 
+{ 
+    static int preIndex = 0; 
+  
+    if (inStrt > inEnd) 
+        return NULL; 
+  
+    /* Pick current node from Preorder traversal using preIndex  
+    and increment preIndex */
+    char curr = pre[preIndex++]; 
+    struct Node* tNode = newNode(curr); 
+  
+    /* If this node has no children then return */
+    if (inStrt == inEnd) 
+        return tNode; 
+  
+    /* Else find the index of this node in Inorder traversal */
+    int inIndex = mp[curr]; 
+  
+    /* Using index in Inorder traversal, construct left and  
+    right subtress */
+    tNode->left = buildTree(in, pre, inStrt, inIndex - 1, mp); 
+    tNode->right = buildTree(in, pre, inIndex + 1, inEnd, mp); 
+  
+    return tNode; 
+} 
+  
+// This function mainly creates an unordered_map, then 
+// calls buildTree() 
+struct Node* buldTreeWrap(char in[], char pre[], int len) 
+{ 
+    // Store indexes of all items so that we 
+    // we can quickly find later 
+    unordered_map<char, int> mp; 
+    for (int i = 0; i < len; i++) 
+        mp[in[i]] = i; 
+  
+    return buildTree(in, pre, 0, len - 1, mp); 
+} 
+
+111)Construct Binary Tree from Inorder and Postorder
+-----------------------------------------------
+TC:O(n)		SC:O(n)
+
+Node* buildUtil(int in[], int post[], int inStrt, 
+    int inEnd, int* pIndex, unordered_map<int, int>& mp) 
+{ 
+    // Base case 
+    if (inStrt > inEnd) 
+        return NULL; 
+  
+    /* Pick current node from Postorder traversal   
+    using postIndex and decrement postIndex */
+    int curr = post[*pIndex]; 
+    Node* node = newNode(curr); 
+    (*pIndex)--; 
+  
+    /* If this node has no children then return */
+    if (inStrt == inEnd) 
+        return node; 
+  
+    /* Else find the index of this node in Inorder  
+    traversal */
+    int iIndex = mp[curr]; 
+  
+    /* Using index in Inorder traversal, construct  
+    left and right subtress */
+    node->right = buildUtil(in, post, iIndex + 1, 
+                            inEnd, pIndex, mp); 
+    node->left = buildUtil(in, post, inStrt, 
+                           iIndex - 1, pIndex, mp); 
+  
+    return node; 
+} 
+  
+// This function mainly creates an unordered_map, then 
+// calls buildTreeUtil() 
+struct Node* buildTree(int in[], int post[], int len) 
+{ 
+    // Store indexes of all items so that we 
+    // we can quickly find later 
+    unordered_map<int, int> mp; 
+    for (int i = 0; i < len; i++) 
+        mp[in[i]] = i; 
+  
+    int index = len - 1; // Index in postorder 
+    return buildUtil(in, post, 0, len - 1, 
+                     &index, mp); 
+} 
+112)Symmetric Binary Tree
+-----------------------------------------------
+TC:O(n)		SC:O(n)
+
+// Returns true if trees with roots as root1 and root2 are mirror 
+bool isMirror(struct Node *root1, struct Node *root2) 
+{ 
+    // If both trees are emptu, then they are mirror images 
+    if (root1 == NULL && root2 == NULL) 
+        return true; 
+  
+    // For two trees to be mirror images, the following three 
+    // conditions must be true 
+    // 1 - Their root node's key must be same 
+    // 2 - left subtree of left tree and right subtree 
+    //      of right tree have to be mirror images 
+    // 3 - right subtree of left tree and left subtree 
+    //      of right tree have to be mirror images 
+    if (root1 && root2 && root1->key == root2->key) 
+        return isMirror(root1->left, root2->right) && 
+               isMirror(root1->right, root2->left); 
+  
+    // if neither of above conditions is true then root1 
+    // and root2 are not mirror images 
+    return false; 
+} 
+  
+// Returns true if a tree is symmetric i.e. mirror image of itself 
+bool isSymmetric(struct Node* root) 
+{ 
+    // Check if tree is mirror of itself 
+    return isMirror(root, root); 
+} 
+
+113)Flatten Binary Tree to LinkedList
+--------------------------------------------
+TC:O(n)		SC:O(1) //excluding stack space
+
+// Function to convert binary tree into 
+// linked list by altering the right node 
+// and making left node point to NULL 
+void flatten(struct Node* root) 
+{ 
+    // base condition- return if root is NULL 
+    // or if it is a leaf node 
+    if (root == NULL || root->left == NULL && 
+                        root->right == NULL) { 
+        return; 
+    } 
+  
+    // if root->left exists then we have  
+    // to make it root->right 
+    if (root->left != NULL) { 
+  
+        // move left recursively 
+        flatten(root->left); 
+     
+        // store the node root->right 
+        struct Node* tmpRight = root->right; 
+        root->right = root->left; 
+        root->left = NULL; 
+  
+        // find the position to insert 
+        // the stored value    
+        struct Node* t = root->right; 
+        while (t->right != NULL) { 
+            t = t->right; 
+        } 
+  
+        // insert the stored value 
+        t->right = tmpRight; 
+    } 
+  
+    // now call the same function 
+    // for root->right 
+    flatten(root->right); 
+} 
+
+Input:
+    1
+   / \
+  2   5
+ / \   \
+3   4   6
+Output:
+1
+ \
+  2
+   \
+    3
+     \
+      4
+       \
+        5
+         \
+          6
+
+ref:https://www.youtube.com/watch?v=598gdjE6Quo
+114)Check if Binary Tree is mirror of itself or not
+-----------------------------------------------
+TC:O(n)		SC:O(1)//excluding stack space
+bool isMirror(struct Node *root1, struct Node *root2) 
+{ 
+    // If both trees are emptu, then they are mirror images 
+    if (root1 == NULL && root2 == NULL) 
+        return true; 
+  
+    // For two trees to be mirror images, the following three 
+    // conditions must be true 
+    // 1 - Their root node's key must be same 
+    // 2 - left subtree of left tree and right subtree 
+    //      of right tree have to be mirror images 
+    // 3 - right subtree of left tree and left subtree 
+    //      of right tree have to be mirror images 
+    if (root1 && root2 && root1->key == root2->key) 
+        return isMirror(root1->left, root2->right) && 
+               isMirror(root1->right, root2->left); 
+  
+    // if neither of above conditions is true then root1 
+    // and root2 are not mirror images 
+    return false; 
+} 
+  
+// Returns true if a tree is symmetric i.e. mirror image of itself 
+bool isSymmetric(struct Node* root) 
+{ 
+    // Check if tree is mirror of itself 
+    return isMirror(root, root); 
+} 
+
+Binary search Tree
+=======================================================
+115)Populate Next Right pointers of Tree
+----------------------------------------
+TC:O(n)		SC:O(1)//excluding stack space
+/*
+1. First we populate 'neighbor for left child of current node'. If current node's left child is not null then 
+ 1a. If 'right child of current node' is not null then we make 'right child of current node' as the neighbor of left child of current node.
+ 1b. If 'right child of current node' is null then we need to find the first non-null node after the left child at left child's level and make that node as left child's neighbor. 
+
+2. To populate the 'neighbor for right child of current node', we use same logic as step #1b. We find the first non-null node after the right child at its level and make that node as the neighbor of right child.
+
+3. Once neighbors for current node's child nodes are populated, we make recursive calls to populate neighbors for nodes in left and right sub-trees.
+*/
+void connect(Node *root)
+{if(root==NULL){
+    return;
+}
+// populate the right neighbor for left child
+if(root->left!=NULL){
+    if(root->right!=NULL){
+        root->left->nextRight=root->right;
+    }
+    // find first non-null node after left child at its level
+    else{
+        Node* parentNextRight=root->nextRight;
+        Node* tempNextRight;
+        while(parentNextRight!=NULL){// find first non-null node after left child at its level
+            tempNextRight=(parentNextRight->left!=NULL)?parentNextRight->left:parentNextRight->right;
+            //we have found the non-null neighbor for left child
+            if(tempNextRight!=NULL){
+                root->left->nextRight=tempNextRight;
+                break;
+            }
+            parentNextRight=parentNextRight->nextRight;
+        }
+    }
+}
+
+//populate the right neighbor for right child
+if(root->right!=NULL){
+    //find first non-null node after right child at its level
+    Node* parentNextRight=root->nextRight;
+    Node* tempNextRight;
+    while (parentNextRight != NULL)
+            {
+                tempNextRight = (parentNextRight->left != NULL)? parentNextRight->left : parentNextRight->right;
+                 
+                // we have found the non-null neighbor for right child 
+                if (tempNextRight != NULL)
+                {
+                    root->right->nextRight = tempNextRight;
+                    break;
+                }
+                 
+                parentNextRight = parentNextRight->nextRight;
+            }
+        }
+        /* 
+          Populating neighbors in the right sub-tree before that of left sub-tree
+          allows us to access all nodes at the level of current node using neighbor-node chain 
+          while populating neighbors for current node's child nodes. 
+        */
+         
+        // populate neighbors in the right sub-tree first
+        connect(root->right);
+      
+        // and then populate neighbors in the left sub-tree
+        connect(root->left);
+}
+116)Search given Key in BST
+SC:O(1)
+/*
+The Time complexity of a Balanced Binary Searched Tree is logN, as stated in Wikipedia, because as it transverse the tree, it either goes left or right eliminating half of the whole Tree. for an unbalanced Binary search tree, the time complexity is O(n), its basically similar to a linear search.*/
+
+Iterative:
+
+class Solution {
+public:
+   TreeNode* searchBST(TreeNode* root, int val) {
+    while (root != nullptr && root->val != val) {
+      root = (root->val > val) ? root->left : root->right;
+    }
+    return root;
+}
+};
+
+
+recursive:
+class Solution {
+   public:
+     TreeNode* searchBST(TreeNode* root, int val) {
+     return root==NULL?NULL:(val==root->val?root:(root->val>val?searchBST(root->left,val):searchBST(root->right,val)));
+  }
+};
+
+117)Construct (balanced) BST from given keys.
+----------------------------------
+TC:O(n)		SC:O(n)
+
+TNode* sortedArrayToBST(int arr[],  
+                        int start, int end)  
+{  
+    /* Base Case */
+    if (start > end)  
+    return NULL;  
+  
+    /* Get the middle element and make it root */
+    int mid = (start + end)/2;  
+    TNode *root = newNode(arr[mid]);  
+  
+    /* Recursively construct the left subtree  
+    and make it left child of root */
+    root->left = sortedArrayToBST(arr, start,  
+                                    mid - 1);  
+  
+    /* Recursively construct the right subtree  
+    and make it right child of root */
+    root->right = sortedArrayToBST(arr, mid + 1, end);  
+  
+    return root;  
+}  
+
+118)Check is a BT is BST or not
+--------------------------------------
+TC:O(n)		SC:O(1)//excluding stack space tree
+
+int isBST(node* node)  
+{  
+    return(isBSTUtil(node, INT_MIN, INT_MAX));  
+}  
+  
+/* Returns true if the given 
+tree is a BST and its values 
+are >= min and <= max. */
+int isBSTUtil(node* node, int min, int max)  
+{  
+    /* an empty tree is BST */
+    if (node==NULL)  
+        return 1;  
+              
+    /* false if this node violates 
+    the min/max constraint */
+    if (node->data < min || node->data > max)  
+        return 0;  
+      
+    /* otherwise check the subtrees recursively,  
+    tightening the min or max constraint */
+    return
+        isBSTUtil(node->left, min, node->data-1) && // Allow only distinct values  
+        isBSTUtil(node->right, node->data+1, max); // Allow only distinct values  
+}  
+
+119)Find LCA of two nodes in BST
+---------------------------------------------
+TC:O(h)		SC:O(1)//If recursive stack space is ignored, the space complexity of the above solution is constant.
+
+/* Function to find LCA of n1 and n2.  
+The function assumes that both  
+n1 and n2 are present in BST */
+node *lca(node* root, int n1, int n2)  
+{  
+    if (root == NULL) return NULL;  
+  
+    // If both n1 and n2 are smaller 
+    // than root, then LCA lies in left  
+    if (root->data > n1 && root->data > n2)  
+        return lca(root->left, n1, n2);  
+  
+    // If both n1 and n2 are greater than  
+    // root, then LCA lies in right  
+    if (root->data < n1 && root->data < n2)  
+        return lca(root->right, n1, n2);  
+  
+    return root;  
+}  
+
+120)Find the inorder predecessor/successor of a given Key in BST
+------------------------------------------------------------------
+TC:O(n)		SC:O(1)
+// This function finds predecessor and successor of key in BST. 
+// It sets pre and suc as predecessor and successor respectively 
+void findPreSuc(Node* root, Node*& pre, Node*& suc, int key) 
+{ 
+    // Base case 
+    if (root == NULL)  return ; 
+  
+    // If key is present at root 
+    if (root->key == key) 
+    { 
+        // the maximum value in left subtree is predecessor 
+        if (root->left != NULL) 
+        { 
+            Node* tmp = root->left; 
+            while (tmp->right) 
+                tmp = tmp->right; 
+            pre = tmp ; 
+        } 
+  
+        // the minimum value in right subtree is successor 
+        if (root->right != NULL) 
+        { 
+            Node* tmp = root->right ; 
+            while (tmp->left) 
+                tmp = tmp->left ; 
+            suc = tmp ; 
+        } 
+        return ; 
+    } 
+  
+    // If key is smaller than root's key, go to left subtree 
+    if (root->key > key) 
+    { 
+        suc = root ; 
+        findPreSuc(root->left, pre, suc, key) ; 
+    } 
+    else // go to right subtree 
+    { 
+        pre = root ; 
+        findPreSuc(root->right, pre, suc, key) ; 
+    } 
+} 
+
+121)Floor and Ceil in a BST
+-------------------------------------------------------
+TC:O(n)		SC:O(1)
+
+void findFloorCeil(Node* root, Node* &floor, Node* &ceil, int key)
+{
+	// base case
+	if (root == nullptr)
+		return;
+
+	// if node with key's value is found, both floor and ceil is equal
+	// to the current node
+	if (root->data == key)
+	{
+		floor = root;
+		ceil = root;
+	}
+
+	// if given key is less than the root node, recur for left subtree
+	else if (key < root->data)
+	{
+		// update ceil to current node before recursing in left subtree
+		ceil = root;
+		findFloorCeil(root->left, floor, ceil, key);
+	}
+
+	// if given key is more than the root node, recur for right subtree
+	else
+	{
+		// update floor to current node before recursing in right subtree
+		floor = root;
+		findFloorCeil(root->right, floor, ceil, key);
+	}
+}
+
+output will be -1 if floor or ceil is not found;
+cout<<(floor?floor->data:-1)<<endl;
+cout<<(ceil?ceil->data:-1)<<endl;
+
+122)Find K-th smallest and K-th largest element in BST
+------------------------------------------
+Kth smallest element in BST (inorder traversal)
+TC:O(n)		SC:O(1)
+
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        int nums[2]={0};
+        inorder(root,nums,k);
+        return nums[1];
+    }
+public:
+    void inorder(TreeNode* root,int nums[],int k){
+        if(root == NULL){
+            return;
+        }
+        
+        inorder(root->left,nums,k);
+        if(++nums[0] == k){
+            nums[1]=root->val;
+            return;
+        }
+        inorder(root->right,nums,k);
+    }
+    
+};
+
+Kth largest element in BST ( Reverse Inorder traversal )
+TC:O(n)		SC:O(1)
+
+int KthLargestBST (BSTNode root, int K, int &count )
+{
+  if(root == NULL || count >= K)
+   return -1
+  KthLargestBST (root.right, K, count)
+  count = count + 1
+  if(count == K)
+   return root.data
+  KthLargestBST (root.left, K, count)
+}
+
+
+123)Find a pair with a given sum in BST
+-----------------------------------------------
+TC:O(n)		SC:(h)//if tree is balanced
+// Function to find a pair with given sum 
+bool existsPair(node* root, int x) 
+{ 
+    // Iterators for BST 
+    stack<node *> it1, it2; 
+  
+    // Initializing forward iterator 
+    node* c = root; 
+    while (c != NULL) 
+        it1.push(c), c = c->left; 
+  
+    // Initializing backward iterator 
+    c = root; 
+    while (c != NULL) 
+        it2.push(c), c = c->right; 
+  
+    // Two pointer technique 
+    while (it1.top() != it2.top()) { 
+  
+        // Variables to store values at 
+        // it1 and it2 
+        int v1 = it1.top()->data, v2 = it2.top()->data; 
+  
+        // Base case 
+        if (v1 + v2 == x) 
+            return true; 
+  
+        // Moving forward pointer 
+        if (v1 + v2 < x) { 
+            c = it1.top()->right; 
+            it1.pop(); 
+            while (c != NULL) 
+                it1.push(c), c = c->left; 
+        } 
+  
+        // Moving backward pointer 
+        else { 
+            c = it2.top()->left; 
+            it2.pop(); 
+            while (c != NULL) 
+                it2.push(c), c = c->right; 
+        } 
+    } 
+  
+    // Case when no pair is found 
+    return false; 
+} 
+
+ref:https://www.geeksforgeeks.org/pair-with-a-given-sum-in-bst-set-2/
+124)BST iterator
+-------------------------------------------
+TC:O(1)//best and avg //TC:O(n) only tree skewed but that too goes through left of that node
+SC:O(h)
+/*
+
+Space complexity: The space complexity is O(h) which is occupied by our custom stack for simulating the inorder traversal. Again, we satisfy the space requirements as well as specified in the problem statement. 
+*/
+class BSTIterator {
+private:
+    stack<TreeNode*> st;
+public:
+    BSTIterator(TreeNode *root) {
+        find_left(root);
+    }
+
+    /** @return whether we have a next smallest number */
+    bool hasNext() {
+        if (st.empty())
+            return false;
+        return true;
+    }
+
+    /** @return the next smallest number */
+    int next() {
+        TreeNode* top = st.top();
+        st.pop();
+        if (top->right != NULL)
+            find_left(top->right);
+            
+        return top->val;
+    }
+    
+    /** put all the left child() of root */
+    void find_left(TreeNode* root)
+    {
+        TreeNode* p = root;
+        while (p != NULL)
+        {
+            st.push(p);
+            p = p->left;
+        }
+    }
+};
+125)Size of the largest BST in a Binary Tree
+------------------------------------------------
+TC:O(n)		SC:O(1)//excluding the call stack
+
+// Data structure to store information about binary tree rooted under a node
+struct SubTreeInfo
+{
+	// stores the min and the max value in the binary tree rooted under the
+	// current node. They are relevant only if isBST flag is true
+	int min, max;
+
+	// stores the size of largest BST in binary tree rooted under
+	// the current node
+	int size;
+
+	// true if binary tree rooted under the current node is a BST
+	bool isBST;
+
+	// Constructor
+	SubTreeInfo(int min, int max, int size, bool isBST)
+	{
+		this->min = min;
+		this->max = max;
+		this->size = size;
+		this->isBST = isBST;
+	}
+}
+
+// Recursive function to find the size of the largest BST in a given binary tree
+SubTreeInfo* findLargestBST(Node* root)
+{
+	// Base case: empty tree
+	if (root == nullptr)
+		return new SubTreeInfo(INT_MAX, INT_MIN, 0, true);
+
+	// Recur for left subtree and right subtrees
+	SubTreeInfo* left  = findLargestBST(root->left);
+	SubTreeInfo* right = findLargestBST(root->right);
+
+	SubTreeInfo* info = nullptr;
+
+	// Check if binary tree rooted under the current root is a BST
+
+	// 1. Left and right subtree are also BST
+	// 2. The value of the root node should be more than the largest value
+	//	in the left subtree
+	// 3. The value of the root node should be less than the smallest value
+	//	in the right subtree
+	if (left->isBST && right->isBST &&
+		(root->data > left->max && root->data < right->min))
+	{
+		info = new SubTreeInfo(min(root->data, min(left->min, right->min)),
+						max(root->data, max(left->max, right->max)),
+						left->size + 1 + right->size,
+						true);
+	}
+	else
+	{
+		// If binary tree rooted under the current root is not a BST
+		// return the size of largest BST in its left and right subtree
+
+		info = new SubTreeInfo(0, 0,
+						max(left->size, right->size),
+						false);
+	}
+
+	// deallocate the memory for left and right subtrees info node
+	delete(left), delete(right);
+
+	return info;
+}
+
+126)Serialize and deserialize Binary Tree
+------------------------------------------
+TC:O(n)		SC:O(1)
+
+void serialize(Node *root,vector<int> &A)
+{
+    if(root==NULL){
+        A.push_back(-1);
+        return;
+    }
+    
+    A.push_back(root->data);
+    serialize(root->left,A);
+    serialize(root->right,A);
+
+}
+
+/*this function deserializes
+ the serialized vector A*/
+
+Node* deSerializeUtil(vector<int> &A,int &pointer)
+{
+if(A[pointer]==-1){
+pointer++;
+return NULL;
+}
+Node *root = new Node(A[pointer]);
+pointer++;
+root->left = deSerializeUtil(A,pointer);
+root->right = deSerializeUtil(A,pointer);
+
+return root;
+}
+
+Node * deSerialize(vector<int> &A)
+{
+//Your code here
+int pointer=0;
+return deSerializeUtil(A,pointer);
+}
+
+127)Binary Tree to Double Linked List
+----------------------------------
+TC:O(n)		SC:O(1)
+
+void inorder(Node* root,Node** head)
+{
+if(root==NULL)
+return ;
+static Node* prev=NULL;
+inorder(root->left,head);
+if(*head==NULL)
+*head=root;
+else
+{
+root->left=prev;
+prev->right=root;
+}
+prev=root;
+inorder(root->right,head);
+}
+Node * bToDLL(Node *root)
+{
+Node* head=NULL;
+inorder(root,&head);
+return head;
+}
+
+128)Find median in a stream of running integers
+-------------------------------------
+TC:O(log n)//for addNum()
+TC:O(1)//for finding the medium
+SC:O(n)
+
+class MedianFinder {
+private:
+    priority_queue<int> firstQ; // max_heap for the first half
+    priority_queue<int, std::vector<int>, std::greater<int> > secQ; // min_heap for the second half
+public:
+    // Adds a number into the data structure.
+    void addNum(int num) {
+        if(firstQ.empty() || (firstQ.top()>num)) firstQ.push(num); // if it belongs to the smaller half
+        else secQ.push(num); 
+        
+        // rebalance the two halfs to make sure the length difference is no larger than 1
+        if(firstQ.size() > (secQ.size()+1))
+        {
+            secQ.push(firstQ.top());
+            firstQ.pop();
+        }
+        else if(firstQ.size()+1<secQ.size())
+        {
+            firstQ.push(secQ.top());
+            secQ.pop();
+        }
+    }
+
+    // Returns the median of current data stream
+    double findMedian() {
+        if(firstQ.size() == secQ.size()) return firstQ.empty()?0:( (firstQ.top()+secQ.top())/2.0);
+        else return (firstQ.size() > secQ.size())? firstQ.top():secQ.top(); 
+    }
+};
+129)K-th largest element in a stream.
+------------------------------------
+TC:O(log k)	SC:O(k)
+class KthLargest {
+public:
+    priority_queue<int,vector<int>,greater<int>> minheap;// Syntax to create a min heap for priority queue
+    int m_k;
+    KthLargest(int k, vector<int>& nums) {
+        m_k=k;
+        for(int x:nums)add(x);
+    }
+    
+    int add(int val) {
+        if(minheap.size()<m_k)minheap.push(val);
+        else
+        {
+            if(val>minheap.top())
+            {
+                minheap.pop();
+                minheap.push(val);
+            }
+        }
+        return minheap.top();
+    }
+};
+
+130)Distinct numbers in Window.
+---------------------------------
+TC:O(n)		SC:O(n)
+
+void countDistinct(int arr[], int k, int n) 
+{ 
+    // Creates an empty hashmap hm 
+    map<int, int> hm; 
+  
+    // initialize distinct element count for current window 
+    int dist_count = 0; 
+  
+    // Traverse the first window and store count 
+    // of every element in hash map 
+    for (int i = 0; i < k; i++) { 
+        if (hm[arr[i]] == 0) { 
+            dist_count++; 
+        } 
+        hm[arr[i]] += 1; 
+    } 
+  
+    // Print count of first window 
+    cout << dist_count << endl; 
+  
+    // Traverse through the remaining array 
+    for (int i = k; i < n; i++) { 
+        // Remove first element of previous window 
+        // If there was only one occurrence, then reduce distinct count. 
+        if (hm[arr[i - k]] == 1) { 
+            dist_count--; 
+        } 
+        // reduce count of the removed element 
+        hm[arr[i - k]] -= 1; 
+  
+        // Add new element of current window 
+        // If this element appears first time, 
+        // increment distinct element count 
+  
+        if (hm[arr[i]] == 0) { 
+            dist_count++; 
+        } 
+        hm[arr[i]] += 1; 
+  
+        // Print count of current window 
+        cout << dist_count << endl; 
+    } 
+} 
+
+131)K-th largest element in an unsorted array
+------------------------------------
+TC:O(n)		sc:O(1)
+class Solution {
+public:
+	int partition(vector<int>& nums, int i, int j)
+	{
+		if (i == j) return i;
+
+		int pivot = nums[i];
+		std::swap(nums[i], nums[j]);
+		
+		int i0 = i;
+		for(int k = i; k < j; k ++)
+		{
+			if(nums[k] <= pivot)
+			{
+				std::swap(nums[k], nums[i0 ++]);
+			}
+		}
+		std::swap(nums[i0], nums[j]);
+		return i0;
+	}
+    int findKthLargest(vector<int>& nums, int k) 
+	{
+		size_t len = nums.size();
+		int pi = 0;
+		int tgt = len - k;
+
+		int a = 0, b = len - 1;
+		while((pi = partition(nums, a, b)) != tgt)
+		{
+			if(pi < tgt)
+			{
+				a = pi + 1;
+			}
+			else if(pi > tgt)
+			{
+				b = pi - 1;
+			}
+		}
+		return nums[pi];
+    }
+};
+Example 1:
+
+Input: [3,2,1,5,6,4] and k = 2
+Output: 5
+
+Example 2:
+
+Input: [3,2,3,1,2,4,5,5,6] and k = 4
+Output: 4
+132)Flood-fill Algorithm
+----------------------------------------------
+Time Complexity: O(N), where NNN is the number of pixels in the image. We might process every pixel.
+
+Space Complexity: O(N), the size of the implicit call stack when calling dfs.
+
+class Solution {
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+        if(image[sr][sc]==newColor){
+            return image;
+        }
+        
+        fill(image,sr,sc,image[sr][sc],newColor);
+        return image;
+    }
+public:
+    void fill(vector<vector<int>>& image,int i,int j,int color,int newColor){
+        if(i<0 || i>=image.size() || j<0 || j>=image[i].size() || image[i][j] != color){
+            return;
+        }
+        image[i][j]=newColor;
+        fill(image,i+1,j,color,newColor);
+        fill(image,i-1,j,color,newColor);
+        fill(image,i,j+1,color,newColor);
+        fill(image,i,j-1,color,newColor);
+    }
+};
+
+GRAPH
+===========================
+134)Clone a graph
+----------------------------
+TC:O(E+V)	SC:O(V)
+class Solution {
+public:
+    Node* cloneGraph(Node* node) {
+        if(!node)
+            return NULL;
+        unordered_map<int, Node*> visited;
+        return clone_node(node,visited);
+    }
+    
+    Node* clone_node(Node* node,unordered_map<int,Node*>& visited){
+        Node *new_node = new Node(node->val);
+        visited.insert({node->val,new_node});
+        
+        for(Node *n : node->neighbors){
+            auto it=visited.find(n->val);
+            if(it==visited.end()){//not visited
+                Node* cn =clone_node(n,visited);
+                new_node->neighbors.push_back(cn);
+            }
+            else{
+                (new_node->neighbors).push_back(it->second);
+            }
+        }
+        return new_node;
+    }
+};
+
+ref:https://www.youtube.com/watch?v=S931KMpiKmQ
+
+134)DFS (PREORDER) // Stack 
+-------------------------------------------
+TC:O(V+E)	SC:O(V)//https://www.youtube.com/watch?v=ZpOy0-QBVPM
+void Graph::DFSUtil(int v, bool visited[]) 
+{ 
+    // Mark the current node as visited and 
+    // print it 
+    visited[v] = true; 
+    cout << v << " "; 
+  
+    // Recur for all the vertices adjacent 
+    // to this vertex 
+    list<int>::iterator i; 
+    for (i = adj[v].begin(); i != adj[v].end(); ++i) 
+        if (!visited[*i]) 
+            DFSUtil(*i, visited); 
+} 
+  
+// DFS traversal of the vertices reachable from v. 
+// It uses recursive DFSUtil() 
+void Graph::DFS(int v) 
+{ 
+    // Mark all the vertices as not visited 
+    bool *visited = new bool[V]; 
+    for (int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    // Call the recursive helper function 
+    // to print DFS traversal 
+    DFSUtil(v, visited); 
+} 
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+/*Handling disconnected graph*/
+// The function to do DFS traversal. It uses recursive DFSUtil() 
+void Graph::DFS() 
+{ 
+    // Mark all the vertices as not visited 
+    bool *visited = new bool[V]; 
+    for (int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    // Call the recursive helper function to print DFS traversal 
+    // starting from all vertices one by one 
+    for (int i = 0; i < V; i++) 
+        if (visited[i] == false) 
+            DFSUtil(i, visited); 
+} 
+135)BFS (LEVELORDER) //queue
+-------------------------------------------
+TC:O(V+E)	SC:O(V)//https://www.youtube.com/watch?v=ZpOy0-QBVPM
+
+void Graph::BFS(int s) 
+{ 
+    // Mark all the vertices as not visited 
+    bool *visited = new bool[V]; 
+    for(int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    // Create a queue for BFS 
+    list<int> queue; 
+  
+    // Mark the current node as visited and enqueue it 
+    visited[s] = true; 
+    queue.push_back(s); 
+  
+    // 'i' will be used to get all adjacent 
+    // vertices of a vertex 
+    list<int>::iterator i; 
+  
+    while(!queue.empty()) 
+    { 
+        // Dequeue a vertex from queue and print it 
+        s = queue.front(); 
+        cout << s << " "; 
+        queue.pop_front(); 
+  
+        // Get all adjacent vertices of the dequeued 
+        // vertex s. If a adjacent has not been visited,  
+        // then mark it visited and enqueue it 
+        for (i = adj[s].begin(); i != adj[s].end(); ++i) 
+        { 
+            if (!visited[*i]) 
+            { 
+                visited[*i] = true; 
+                queue.push_back(*i); 
+            } 
+        } 
+    } 
+} 
+136)Detect A cycle in Undirected Graph/Directed Graph
+------------------------------------------------------
+TC:O(v+E)	SC:O(V)
+Undirected Graph
+-----------------------------------
+Graph::Graph(int V) 
+{ 
+    this->V = V; 
+    adj = new list<int>[V]; 
+} 
+  
+void Graph::addEdge(int v, int w) 
+{ 
+    adj[v].push_back(w); // Add w to v’s list. 
+    adj[w].push_back(v); // Add v to w’s list. 
+} 
+  
+// A recursive function that uses visited[] and parent to detect 
+// cycle in subgraph reachable from vertex v. 
+bool Graph::isCyclicUtil(int v, bool visited[], int parent) 
+{ 
+    // Mark the current node as visited 
+    visited[v] = true; 
+  
+    // Recur for all the vertices adjacent to this vertex 
+    list<int>::iterator i; 
+    for (i = adj[v].begin(); i != adj[v].end(); ++i) 
+    { 
+        // If an adjacent is not visited, then recur for that adjacent 
+        if (!visited[*i]) 
+        { 
+           if (isCyclicUtil(*i, visited, v)) 
+              return true; 
+        } 
+  
+        // If an adjacent is visited and not parent of current vertex, 
+        // then there is a cycle. 
+        else if (*i != parent) 
+           return true; 
+    } 
+    return false; 
+} 
+  
+// Returns true if the graph contains a cycle, else false. 
+bool Graph::isCyclic() 
+{ 
+    // Mark all the vertices as not visited and not part of recursion 
+    // stack 
+    bool *visited = new bool[V]; 
+    for (int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    // Call the recursive helper function to detect cycle in different 
+    // DFS trees 
+    for (int u = 0; u < V; u++) 
+        if (!visited[u]) // Don't recur for u if it is already visited 
+          if (isCyclicUtil(u, visited, -1)) 
+             return true; 
+  
+    return false; 
+} 
+
+Directed graph
+--------------------------------------------
+// This function is a variation of DFSUtil() in https://www.geeksforgeeks.org/archives/18212 
+bool Graph::isCyclicUtil(int v, bool visited[], bool *recStack) 
+{ 
+    if(visited[v] == false) 
+    { 
+        // Mark the current node as visited and part of recursion stack 
+        visited[v] = true; 
+        recStack[v] = true; 
+  
+        // Recur for all the vertices adjacent to this vertex 
+        list<int>::iterator i; 
+        for(i = adj[v].begin(); i != adj[v].end(); ++i) 
+        { 
+            if ( !visited[*i] && isCyclicUtil(*i, visited, recStack) ) 
+                return true; 
+            else if (recStack[*i]) 
+                return true; 
+        } 
+  
+    } 
+    recStack[v] = false;  // remove the vertex from recursion stack 
+    return false; 
+} 
+  
+// Returns true if the graph contains a cycle, else false. 
+// This function is a variation of DFS() in https://www.geeksforgeeks.org/archives/18212 
+bool Graph::isCyclic() 
+{ 
+    // Mark all the vertices as not visited and not part of recursion 
+    // stack 
+    bool *visited = new bool[V]; 
+    bool *recStack = new bool[V]; 
+    for(int i = 0; i < V; i++) 
+    { 
+        visited[i] = false; 
+        recStack[i] = false; 
+    } 
+  
+    // Call the recursive helper function to detect cycle in different 
+    // DFS trees 
+    for(int i = 0; i < V; i++) 
+        if (isCyclicUtil(i, visited, recStack)) 
+            return true; 
+  
+    return false; 
+} 
+
+137)Topo Sort//Kahn’s algorithm
+-----------------------------------
+TC:O(V+E)	SC:O(V)
+
+void Graph::topologicalSort() 
+{ 
+    // Create a vector to store 
+    // indegrees of all 
+    // vertices. Initialize all 
+    // indegrees as 0. 
+    vector<int> in_degree(V, 0); 
+  
+    // Traverse adjacency lists 
+    // to fill indegrees of 
+    // vertices.  This step 
+    // takes O(V+E) time 
+    for (int u = 0; u < V; u++) { 
+        list<int>::iterator itr; 
+        for (itr = adj[u].begin(); 
+             itr != adj[u].end(); itr++) 
+            in_degree[*itr]++; 
+    } 
+  
+    // Create an queue and enqueue 
+    // all vertices with indegree 0 
+    queue<int> q; 
+    for (int i = 0; i < V; i++) 
+        if (in_degree[i] == 0) 
+            q.push(i); 
+  
+    // Initialize count of visited vertices 
+    int cnt = 0; 
+  
+    // Create a vector to store 
+    // result (A topological 
+    // ordering of the vertices) 
+    vector<int> top_order; 
+  
+    // One by one dequeue vertices 
+    // from queue and enqueue 
+    // adjacents if indegree of 
+    // adjacent becomes 0 
+    while (!q.empty()) { 
+        // Extract front of queue 
+        // (or perform dequeue) 
+        // and add it to topological order 
+        int u = q.front(); 
+        q.pop(); 
+        top_order.push_back(u); 
+  
+        // Iterate through all its 
+        // neighbouring nodes 
+        // of dequeued node u and 
+        // decrease their in-degree 
+        // by 1 
+        list<int>::iterator itr; 
+        for (itr = adj[u].begin(); 
+             itr != adj[u].end(); itr++) 
+  
+            // If in-degree becomes zero, 
+            // add it to queue 
+            if (--in_degree[*itr] == 0) 
+                q.push(*itr); 
+  
+        cnt++; 
+    } 
+  
+    // Check if there was a cycle 
+    if (cnt != V) { 
+        cout << "There exists a cycle in the graph\n"; 
+        return; 
+    } 
+  
+    // Print topological order 
+    for (int i = 0; i < top_order.size(); i++) 
+        cout << top_order[i] << " "; 
+    cout << endl; 
+} 
+138)Number of islands (Do in Grid and Graph both)
+--------------------------------------------------
+Example 1:
+
+Input:
+11110
+11010
+11000
+00000
+
+Output: 1
+
+Example 2:
+
+Input:
+11000
+11000
+00100
+00011
+
+Output: 3
+
+
+/*Number of islands*/
+TC:O(m*n)	SC:O(m*n)//including stack space
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int m = grid.size(), n = m ? grid[0].size() : 0, islands = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '1') {
+                    islands++;
+                    eraseIslands(grid, i, j);
+                }
+            }
+        }
+        return islands;
+    }
+private:
+    void eraseIslands(vector<vector<char>>& grid, int i, int j) {
+        int m = grid.size(), n = grid[0].size();
+        if (i < 0 || i == m || j < 0 || j == n || grid[i][j] == '0') {
+            return;
+        }
+        grid[i][j] = '0';
+        eraseIslands(grid, i - 1, j);
+        eraseIslands(grid, i + 1, j);
+        eraseIslands(grid, i, j - 1);
+        eraseIslands(grid, i, j + 1);
+    }
+};
+
+/*
+Connected Components in an undirected graph */
+TC:O(V+E)	SC:O(V)
+
+void Graph::connectedComponents() 
+{ 
+    // Mark all the vertices as not visited 
+    bool *visited = new bool[V]; 
+    for(int v = 0; v < V; v++) 
+        visited[v] = false; 
+  
+    for (int v=0; v<V; v++) 
+    { 
+        if (visited[v] == false) 
+        { 
+            // print all reachable vertices 
+            // from v 
+            DFSUtil(v, visited); 
+  
+            cout << "\n"; 
+        } 
+    } 
+    delete[] visited; 
+} 
+  
+void Graph::DFSUtil(int v, bool visited[]) 
+{ 
+    // Mark the current node as visited and print it 
+    visited[v] = true; 
+    cout << v << " "; 
+  
+    // Recur for all the vertices 
+    // adjacent to this vertex 
+    list<int>::iterator i; 
+    for(i = adj[v].begin(); i != adj[v].end(); ++i) 
+        if(!visited[*i]) 
+            DFSUtil(*i, visited); 
+} 
+  
+Graph::Graph(int V) 
+{ 
+    this->V = V; 
+    adj = new list<int>[V]; 
+} 
+  
+Graph::~Graph() 
+{ 
+    delete[] adj; 
+} 
+
+139)Bipartite Check
+--------------------------------------------------------
+TC:O(V+E)	SC:O(v)
+
+// C++program to check if a connected 
+// graph is bipartite or not suing DFS 
+#include <bits/stdc++.h> 
+using namespace std; 
+
+// function to store the connected nodes 
+void addEdge(vector<int> adj[], int u, int v) 
+{ 
+	adj[u].push_back(v); 
+	adj[v].push_back(u); 
+} 
+
+// function to check whether a graph is bipartite or not 
+bool isBipartite(vector<int> adj[], int v, 
+				vector<bool>& visited, vector<int>& color) 
+{ 
+
+	for (int u : adj[v]) { 
+
+		// if vertex u is not explored before 
+		if (visited[u] == false) { 
+
+			// mark present vertic as visited 
+			visited[u] = true; 
+
+			// mark its color opposite to its parent 
+			color[u] = !color[v]; 
+
+			// if the subtree rooted at vertex v is not bipartite 
+			if (!isBipartite(adj, u, visited, color)) 
+				return false; 
+		} 
+
+		// if two adjacent are colored with same color then 
+		// the graph is not bipartite 
+		else if (color[u] == color[v]) 
+			return false; 
+	} 
+	return true; 
+} 
+
+// Driver Code 
+int main() 
+{ 
+	// no of nodes 
+	int N = 6; 
+
+	// to maintain the adjacency list of graph 
+	vector<int> adj[N + 1]; 
+
+	// to keep a check on whether 
+	// a node is discovered or not 
+	vector<bool> visited(N + 1); 
+
+	// to color the vertices 
+	// of graph with 2 color 
+	vector<int> color(N + 1); 
+
+	// adding edges to the graph 
+	addEdge(adj, 1, 2); 
+	addEdge(adj, 2, 3); 
+	addEdge(adj, 3, 4); 
+	addEdge(adj, 4, 5); 
+	addEdge(adj, 5, 6); 
+	addEdge(adj, 6, 1); 
+
+	// marking the source node as visited 
+	visited[1] = true; 
+
+	// marking the source node with a color 
+	color[1] = 0; 
+
+	// Function to check if the graph 
+	// is Bipartite or not 
+	if (isBipartite(adj, 1, visited, color)) { 
+		cout << "Graph is Bipartite"; 
+	} 
+	else { 
+		cout << "Graph is not Bipartite"; 
+	} 
+
+	return 0; 
+} 
+
+140)Strongly Connected Components Kosaraju's Algorithm Graph Algorithm
+------------------------------------------------------------
+TC:O(V+E)	SC:O(V)
+
+// A recursive function to print DFS starting from v 
+void Graph::DFSUtil(int v, bool visited[]) 
+{ 
+    // Mark the current node as visited and print it 
+    visited[v] = true; 
+    cout << v << " "; 
+  
+    // Recur for all the vertices adjacent to this vertex 
+    list<int>::iterator i; 
+    for (i = adj[v].begin(); i != adj[v].end(); ++i) 
+        if (!visited[*i]) 
+            DFSUtil(*i, visited); 
+} 
+  
+Graph Graph::getTranspose() 
+{ 
+    Graph g(V); 
+    for (int v = 0; v < V; v++) 
+    { 
+        // Recur for all the vertices adjacent to this vertex 
+        list<int>::iterator i; 
+        for(i = adj[v].begin(); i != adj[v].end(); ++i) 
+        { 
+            g.adj[*i].push_back(v); 
+        } 
+    } 
+    return g; 
+} 
+  
+void Graph::addEdge(int v, int w) 
+{ 
+    adj[v].push_back(w); // Add w to v’s list. 
+} 
+  
+void Graph::fillOrder(int v, bool visited[], stack<int> &Stack) 
+{ 
+    // Mark the current node as visited and print it 
+    visited[v] = true; 
+  
+    // Recur for all the vertices adjacent to this vertex 
+    list<int>::iterator i; 
+    for(i = adj[v].begin(); i != adj[v].end(); ++i) 
+        if(!visited[*i]) 
+            fillOrder(*i, visited, Stack); 
+  
+    // All vertices reachable from v are processed by now, push v  
+    Stack.push(v); 
+} 
+  
+// The main function that finds and prints all strongly connected  
+// components 
+void Graph::printSCCs() 
+{ 
+    stack<int> Stack; 
+  
+    // Mark all the vertices as not visited (For first DFS) 
+    bool *visited = new bool[V]; 
+    for(int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    // Fill vertices in stack according to their finishing times 
+    for(int i = 0; i < V; i++) 
+        if(visited[i] == false) 
+            fillOrder(i, visited, Stack); 
+  
+    // Create a reversed graph 
+    Graph gr = getTranspose(); 
+  
+    // Mark all the vertices as not visited (For second DFS) 
+    for(int i = 0; i < V; i++) 
+        visited[i] = false; 
+  
+    // Now process all vertices in order defined by Stack 
+    while (Stack.empty() == false) 
+    { 
+        // Pop a vertex from stack 
+        int v = Stack.top(); 
+        Stack.pop(); 
+  
+        // Print Strongly connected component of the popped vertex 
+        if (visited[v] == false) 
+        { 
+            gr.DFSUtil(v, visited); 
+            cout << endl; 
+        } 
+    } 
+} 
+
+141)Djisktra’s Algorithm
+----------------------------------------------
+TC:O(ElogV)	SC:O(E+V)
+
+set <pair <int,int>>setds; //distance,node
+vector<int> dist(V+1,INF); // distance vector ,initialized with infinity
+setds.insert(make_pair(0,src)); // inserting source node with distance as 0
+dist[src]=0;
+while(!setds.empty()){
+pair<int,int> tmp = *(setds.begin());//get the node which has shortest distance i.e first element in the set
+setds.erase(setds.begin());
+int u = tmp.second;//storing the node value
+list<pair<int,int>>::iterator i;
+for(i=adj[u].begin();i!=adj[u].end();++i){
+	int v=(*i).first;//node
+	int weight=(*i).second;
+	if(dist[v]>dist[u]+weight) 
+	{
+		if(dist[v]!=INF){
+			setds.erase(Setds.find(make_pair(dist[v],v)));
+		}
+		dist[v]=dist[u]+weight;
+		setds.insert(make_pair(dist[v],v));
+	}
+}
+}
+
+142)Bellman Ford Algo // works for negative weights      // fails for negative cycles
+---------------------------------------
+TC:O(V*E)	SC:O(V)
+
+// The main function that finds shortest distances from src to 
+// all other vertices using Bellman-Ford algorithm.  The function 
+// also detects negative weight cycle 
+void BellmanFord(struct Graph* graph, int src) 
+{ 
+    int V = graph->V; 
+    int E = graph->E; 
+    int dist[V]; 
+  
+    // Step 1: Initialize distances from src to all other vertices 
+    // as INFINITE 
+    for (int i = 0; i < V; i++) 
+        dist[i] = INT_MAX; 
+    dist[src] = 0; 
+  
+    // Step 2: Relax all edges |V| - 1 times. A simple shortest 
+    // path from src to any other vertex can have at-most |V| - 1 
+    // edges 
+    for (int i = 1; i <= V - 1; i++) { 
+        for (int j = 0; j < E; j++) { 
+            int u = graph->edge[j].src; 
+            int v = graph->edge[j].dest; 
+            int weight = graph->edge[j].weight; 
+            if (dist[u] != INT_MAX && dist[u] + weight < dist[v]) 
+                dist[v] = dist[u] + weight; 
+        } 
+    } 
+  
+    // Step 3: check for negative-weight cycles.  The above step 
+    // guarantees shortest distances if graph doesn't contain 
+    // negative weight cycle.  If we get a shorter path, then there 
+    // is a cycle. 
+    for (int i = 0; i < E; i++) { 
+        int u = graph->edge[i].src; 
+        int v = graph->edge[i].dest; 
+        int weight = graph->edge[i].weight; 
+        if (dist[u] != INT_MAX && dist[u] + weight < dist[v]) { 
+            printf("Graph contains negative weight cycle"); 
+            return; // If negative cycle is detected, simply return 
+        } 
+    } 
+  
+    printArr(dist, V); 
+  
+    return; 
+} 
+143)Floyd Warshall Algorithm // If diagonals changes to negative numberthen it has cycle containing negative edges
+-------------------------------------------------------
+TC:O(V^3)    //O((v*E)V) => all v can be connected each other worst case then E becomes V = > O(v*v*V) =>O(v^3)
+SC:O(V^2)
+
+// Solves the all-pairs shortest path  
+// problem using Floyd Warshall algorithm  
+void floydWarshall (int graph[][V])  
+{  
+    /* dist[][] will be the output matrix  
+    that will finally have the shortest  
+    distances between every pair of vertices */
+    int dist[V][V], i, j, k;  
+  
+    /* Initialize the solution matrix same  
+    as input graph matrix. Or we can say  
+    the initial values of shortest distances 
+    are based on shortest paths considering  
+    no intermediate vertex. */
+    for (i = 0; i < V; i++)  
+        for (j = 0; j < V; j++)  
+            dist[i][j] = graph[i][j];  
+  
+    /* Add all vertices one by one to  
+    the set of intermediate vertices.  
+    ---> Before start of an iteration,  
+    we have shortest distances between all  
+    pairs of vertices such that the  
+    shortest distances consider only the  
+    vertices in set {0, 1, 2, .. k-1} as 
+    intermediate vertices.  
+    ----> After the end of an iteration,  
+    vertex no. k is added to the set of  
+    intermediate vertices and the set becomes {0, 1, 2, .. k} */
+    for (k = 0; k < V; k++)  
+    {  
+        // Pick all vertices as source one by one  
+        for (i = 0; i < V; i++)  
+        {  
+            // Pick all vertices as destination for the  
+            // above picked source  
+            for (j = 0; j < V; j++)  
+            {  
+                // If vertex k is on the shortest path from  
+                // i to j, then update the value of dist[i][j]  
+                if (dist[i][k] + dist[k][j] < dist[i][j])  
+                    dist[i][j] = dist[i][k] + dist[k][j];  
+            }  
+        }  
+    }  
+  
+    // Print the shortest distance matrix  
+    printSolution(dist);  
+}  
+  
+144)MST using Prim’s Algo
+--------------------------------------------
+TCC:O(Elog(V))   SC:O(E+V)
+
+// Prints shortest paths from src to all other vertices 
+void Graph::primMST() 
+{ 
+    // Create a priority queue to store vertices that 
+    // are being preinMST. This is weird syntax in C++. 
+    // Refer below link for details of this syntax 
+    // http://geeksquiz.com/implement-min-heap-using-stl/ 
+    priority_queue< iPair, vector <iPair> , greater<iPair> > pq; 
+  
+    int src = 0; // Taking vertex 0 as source 
+  
+    // Create a vector for keys and initialize all 
+    // keys as infinite (INF) 
+    vector<int> key(V, INF); 
+  
+    // To store parent array which in turn store MST 
+    vector<int> parent(V, -1); 
+  
+    // To keep track of vertices included in MST 
+    vector<bool> inMST(V, false); 
+  
+    // Insert source itself in priority queue and initialize 
+    // its key as 0. 
+    pq.push(make_pair(0, src)); 
+    key[src] = 0; 
+  
+    /* Looping till priority queue becomes empty */
+    while (!pq.empty()) 
+    { 
+        // The first vertex in pair is the minimum key 
+        // vertex, extract it from priority queue. 
+        // vertex label is stored in second of pair (it 
+        // has to be done this way to keep the vertices 
+        // sorted key (key must be first item 
+        // in pair) 
+        int u = pq.top().second; 
+        pq.pop(); 
+  
+        inMST[u] = true;  // Include vertex in MST 
+  
+        // 'i' is used to get all adjacent vertices of a vertex 
+        list< pair<int, int> >::iterator i; 
+        for (i = adj[u].begin(); i != adj[u].end(); ++i) 
+        { 
+            // Get vertex label and weight of current adjacent 
+            // of u. 
+            int v = (*i).first; 
+            int weight = (*i).second; 
+  
+            //  If v is not in MST and weight of (u,v) is smaller 
+            // than current key of v 
+            if (inMST[v] == false && key[v] > weight) 
+            { 
+                // Updating key of v 
+                key[v] = weight; 
+                pq.push(make_pair(key[v], v)); 
+                parent[v] = u; 
+            } 
+        } 
+    } 
+  
+    // Print edges of MST using parent array 
+    for (int i = 1; i < V; ++i) 
+        printf("%d - %d\n", parent[i], i); 
+} 
+
+145)MST using Kruskal’s Algo
+--------------------------------------
+TC:O(Elog(E)+E)//ElogE for sorting ,E for disjoint set opertions(worst case)
+SC:O(V+E)		
+
+// To represent Disjoint Sets 
+struct DisjointSets 
+{ 
+    int *parent, *rnk; 
+    int n; 
+  
+    // Constructor. 
+    DisjointSets(int n) 
+    { 
+        // Allocate memory 
+        this->n = n; 
+        parent = new int[n+1]; 
+        rnk = new int[n+1]; 
+  
+        // Initially, all vertices are in 
+        // different sets and have rank 0. 
+        for (int i = 0; i <= n; i++) 
+        { 
+            rnk[i] = 0; 
+  
+            //every element is parent of itself 
+            parent[i] = i; 
+        } 
+    } 
+  
+    // Find the parent of a node 'u' 
+    // Path Compression 
+    int find(int u) 
+    { 
+        /* Make the parent of the nodes in the path 
+           from u--> parent[u] point to parent[u] */
+        if (u != parent[u]) 
+            parent[u] = find(parent[u]); 
+        return parent[u]; 
+    } 
+  
+    // Union by rank 
+    void merge(int x, int y) 
+    { 
+        x = find(x), y = find(y); 
+  
+        /* Make tree with smaller height 
+           a subtree of the other tree  */
+        if (rnk[x] > rnk[y]) 
+            parent[y] = x; 
+        else // If rnk[x] <= rnk[y] 
+            parent[x] = y; 
+  
+        if (rnk[x] == rnk[y]) 
+            rnk[y]++; 
+    } 
+}; 
+  
+ /* Functions returns weight of the MST*/ 
+  
+int Graph::kruskalMST() 
+{ 
+    int mst_wt = 0; // Initialize result 
+  
+    // Sort edges in increasing order on basis of cost 
+    sort(edges.begin(), edges.end()); 
+  
+    // Create disjoint sets 
+    DisjointSets ds(V); 
+  
+    // Iterate through all sorted edges 
+    vector< pair<int, iPair> >::iterator it; 
+    for (it=edges.begin(); it!=edges.end(); it++) 
+    { 
+        int u = it->second.first; 
+        int v = it->second.second; 
+  
+        int set_u = ds.find(u); 
+        int set_v = ds.find(v); 
+  
+        // Check if the selected edge is creating 
+        // a cycle or not (Cycle is created if u 
+        // and v belong to same set) 
+        if (set_u != set_v) 
+        { 
+            // Current edge will be in the MST 
+            // so print it 
+            cout << u << " - " << v << endl; 
+  
+            // Update MST weight 
+            mst_wt += it->first; 
+  
+            // Merge two sets 
+            ds.merge(set_u, set_v); 
+        } 
+    } 
+  
+    return mst_wt; 
+} 
+
+Dynamic programming
+==================================================
+
+146)Max Product Subarray
+--------------------------------
+TC:O(n)		SC:O(1)
+int maxProduct(vector<int>& nums) {
+        int n=nums.size();
+        
+        int globalMaxProduct=nums[0];
+        int currentMaxProduct=nums[0];
+        int currentMinProduct=nums[0];
+        
+        for(int i=1;i<n;i++){
+            int temp = currentMaxProduct;
+            
+            currentMaxProduct = max( nums[i],max(currentMaxProduct * nums[i],currentMinProduct * nums[i]));
+            
+            globalMaxProduct = max(globalMaxProduct , currentMaxProduct);
+            
+            currentMinProduct = min( nums[i] ,min( temp*nums[i] , currentMinProduct*nums[i] ) );
+        }
+        return globalMaxProduct;
+    }
+
+Example 1:
+
+Input: [2,3,-2,4]
+Output: 6
+Explanation: [2,3] has the largest product 6.
+
+Example 2:
+
+Input: [-2,0,-1]
+Output: 0
+Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
+
+147)Longest Increasing Subsequence
+-----------------------------------------
+TC:O(n^2)		SC:O(n)
+/* lis() returns the length of the longest   
+  increasing subsequence in arr[] of size n */
+int lis( int arr[], int n )  
+{  
+    int lis[n]; 
+   
+    lis[0] = 1;    
+  
+    /* Compute optimized LIS values in  
+       bottom up manner */
+    for (int i = 1; i < n; i++ )  
+    { 
+        lis[i] = 1; 
+        for (int j = 0; j < i; j++ )   
+            if ( arr[i] > arr[j] && lis[i] < lis[j] + 1)  
+                lis[i] = lis[j] + 1;  
+    } 
+  
+    // Return maximum value in lis[] 
+    return *max_element(lis, lis+n); 
+}  
+
+148)Maximum sum increasing subsequence
+----------------------------------------------------
+TC:O(n^2)	SC:O(n)
+
+/* maxSumIS() returns the maximum  
+sum of increasing subsequence  
+in arr[] of size n */
+int maxSumIS(int arr[], int n)  
+{  
+    int i, j, max = 0;  
+    int msis[n];  
+  
+    /* Initialize msis values  
+    for all indexes */
+    for ( i = 0; i < n; i++ )  
+        msis[i] = arr[i];  
+  
+    /* Compute maximum sum values  
+    in bottom up manner */
+    for ( i = 1; i < n; i++ )  
+        for ( j = 0; j < i; j++ )  
+            if (arr[i] > arr[j] &&  
+                msis[i] < msis[j] + arr[i])  
+                msis[i] = msis[j] + arr[i];  
+  
+    /* Pick maximum of  
+    all msis values */
+    for ( i = 0; i < n; i++ )  
+        if ( max < msis[i] )  
+            max = msis[i];  
+  
+    return max;  
+}  
+
+/*
+if input is {1, 101, 2, 3, 100, 4, 5}, then output should be 106 (1 + 2 + 3 + 100), if the input array is {3, 4, 5, 10}, then output should be 22 (3 + 4 + 5 + 10) 
+*/
+149)Longest Common Subsequence
+-------------------------------------------
+TC:O(m*n)	SC:(m*n)
+
+/* Returns length of LCS for X[0..m-1], Y[0..n-1] */
+int lcs( char *X, char *Y, int m, int n )  
+{  
+    int L[m + 1][n + 1];  
+    int i, j;  
+      
+    /* Following steps build L[m+1][n+1] in  
+       bottom up fashion. Note that L[i][j]  
+       contains length of LCS of X[0..i-1] 
+       and Y[0..j-1] */
+    for (i = 0; i <= m; i++)  
+    {  
+        for (j = 0; j <= n; j++)  
+        {  
+        if (i == 0 || j == 0)  
+            L[i][j] = 0;  
+      
+        else if (X[i - 1] == Y[j - 1])  
+            L[i][j] = L[i - 1][j - 1] + 1;  
+      
+        else
+            L[i][j] = max(L[i - 1][j], L[i][j - 1]);  
+        }  
+    }  
+          
+    /* L[m][n] contains length of LCS  
+    for X[0..n-1] and Y[0..m-1] */
+    return L[m][n];  
+}  
+Example 1:
+
+Input: text1 = "abcde", text2 = "ace" 
+Output: 3  
+Explanation: The longest common subsequence is "ace" and its length is 3.
+
+Example 2:
+
+Input: text1 = "abc", text2 = "abc"
+Output: 3
+Explanation: The longest common subsequence is "abc" and its length is 3.
+150)0-1 Knapsack
+---------------------------------------
+TC:o(n*m)	SC:O(m*n)
+// Returns the maximum value that 
+// can be put in a knapsack of capacity W 
+int knapSack(int W, int wt[], int val[], int n) 
+{ 
+    int i, w; 
+    int K[n + 1][W + 1]; 
+  
+    // Build table K[][] in bottom up manner 
+    for (i = 0; i <= n; i++) { 
+        for (w = 0; w <= W; w++) { 
+            if (i == 0 || w == 0) 
+                K[i][w] = 0; 
+            else if (wt[i - 1] <= w) 
+                K[i][w] = max( 
+                    val[i - 1] + K[i - 1][w - wt[i - 1]], 
+                    K[i - 1][w]); 
+            else
+                K[i][w] = K[i - 1][w]; 
+        } 
+    } 
+  
+    return K[n][W]; 
+} 
+
+151)Edit distance
+--------------------------------------
+TC:O(n*m)	SC:O(n*m)
+
+int editDistDP(string str1, string str2, int m, int n) 
+{ 
+    // Create a table to store results of subproblems 
+    int dp[m + 1][n + 1]; 
+  
+    // Fill d[][] in bottom up manner 
+    for (int i = 0; i <= m; i++) { 
+        for (int j = 0; j <= n; j++) { 
+            // If first string is empty, only option is to 
+            // insert all characters of second string 
+            if (i == 0) 
+                dp[i][j] = j; // Min. operations = j 
+  
+            // If second string is empty, only option is to 
+            // remove all characters of second string 
+            else if (j == 0) 
+                dp[i][j] = i; // Min. operations = i 
+  
+            // If last characters are same, ignore last char 
+            // and recur for remaining string 
+            else if (str1[i - 1] == str2[j - 1]) 
+                dp[i][j] = dp[i - 1][j - 1]; 
+  
+            // If the last character is different, consider all 
+            // possibilities and find the minimum 
+            else
+                dp[i][j] = 1 + min(dp[i][j - 1], // Insert 
+                                   dp[i - 1][j], // Remove 
+                                   dp[i - 1][j - 1]); // Replace 
+        } 
+    } 
+  
+    return dp[m][n]; 
+} 
+
+Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
+
+You have the following 3 operations permitted on a word:
+
+   1 Insert a character
+   2 Delete a character
+   3 Replace a character
+
+Example 1:
+
+Input: word1 = "horse", word2 = "ros"
+Output: 3
+Explanation: 
+horse -> rorse (replace 'h' with 'r')
+rorse -> rose (remove 'r')
+rose -> ros (remove 'e')
+
+152)Matrix Chain Multiplication
+------------------------------------
+TC:O(n^3)	sc:O(n^2)
+
+main(){
+	int n=5;
+	int p={5,4,6,2,7};
+	int m[5][5]={0};
+	int s[5][5]={0};
+	int j,min,q;
+	for(int d=1;d<n-1;d++){
+		for(int i=1;i<n-d;i++){
+			j=i+d;
+			min=INT_MAX;
+			for(int k=i;k<=j-1;k++){
+				q=m[i][k]+m[k+1][j]+p[i-1]*p[k]*p[j];
+				if(q<min){
+					min = q;
+					s[i][j]=k;//for trace backing the path
+				}
+			}
+			min[i][j]=min;
+		}
+	}
+	cout<<m[i][n-1];
+}
+
+153)MINIMUM SUM PATH IN MATRIX	
+----------------------------------------
+TC:O(n^2)	SC:O(n^2)
+
+public int minCost(int [][]cost,int m,int n){
+        
+        int temp[][] = new int[m+1][n+1];
+        int sum = 0;
+        for(int i=0; i <= n; i++){
+            temp[0][i] = sum + cost[0][i];
+            sum = temp[0][i];
+        }
+        sum = 0;
+        for(int i=0; i <= m; i++){
+            temp[i][0] = sum + cost[i][0];
+            sum = temp[i][0];
+        }
+        
+        for(int i=1; i <= m; i++){
+            for(int j=1; j <= n; j++){
+                temp[i][j] = cost[i][j] + min(temp[i-1][j-1], temp[i-1][j],temp[i][j-1]);
+            }
+        }
+        return temp[m][n];
+    }
+154)Find minimum number of coins that make a given value
+------------------------------------------------------
+TC:(n*amount)	SC:O(amount)
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        int Max = amount + 1;
+        vector<int> dp(amount + 1, Max);//Creating an array of size amount+1 and initializing all the values with amount+1 
+        dp[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (int j = 0; j < coins.size(); j++) {
+                if (coins[j] <= i) {
+                    dp[i] = min(dp[i], dp[i - coins[j]] + 1);
+                }
+            }
+        }
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+};
+Example 1:
+
+Input: coins = [1, 2, 5], amount = 11
+Output: 3 
+Explanation: 11 = 5 + 5 + 1
+
+Example 2:
+
+Input: coins = [2], amount = 3
+Output: -1
+
+....................................................................
+TC:O(n*amount)		SC:O(amount)
+
+	public static int change(int amount, int[] coins){
+		int[] combinations = new int[amount + 1];
+		
+		combinations[0] = 1;
+		
+		for(int coin : coins){
+			for(int i = 1; i < combinations.length; i++){
+				if(i >= coin){
+					combinations[i] += combinations[i - coin];
+					//printAmount(combinations);
+				}
+			}
+			//System.out.println();
+		}
+		
+		return combinations[amount];
+	}
+/*
+You are given coins of different denominations and a total amount of money. Write a function to compute the number of combinations that make up that amount. You may assume that you have infinite number of each kind of coin.
+Example 1:
+Input: amount = 5, coins = [1, 2, 5]
+Output: 4
+Explanation: there are four ways to make up the amount:
+5=5
+5=2+2+1
+5=2+1+1+1
+5=1+1+1+1+1
+
+Example 2:
+
+Input: amount = 3, coins = [2]
+Output: 0
+Explanation: the amount of 3 cannot be made up just with coins of 2.
+
+Example 3:
+
+Input: amount = 10, coins = [10] 
+Output: 1
+Ref:https://www.youtube.com/watch?v=jaNZ83Q3QGc
+
+*/
+155)Subset Sum
+-------------------------------------------
+TC:O(n*sum)	SC:O(n*sum)
+
+bool isSubsetSum(int set[], int n, int sum) 
+{ 
+    // The value of subset[i][j] will be true if 
+    // there is a subset of set[0..j-1] with sum 
+    // equal to i 
+    bool subset[n + 1][sum + 1]; 
+  
+    // If sum is 0, then answer is true 
+    for (int i = 0; i <= n; i++) 
+        subset[i][0] = true; 
+  
+    // If sum is not 0 and set is empty, 
+    // then answer is false 
+    for (int i = 1; i <= sum; i++) 
+        subset[0][i] = false; 
+  
+    // Fill the subset table in botton up manner 
+    for (int i = 1; i <= n; i++) { 
+        for (int j = 1; j <= sum; j++) { 
+            if (j < set[i - 1]) 
+                subset[i][j] = subset[i - 1][j]; 
+            if (j >= set[i - 1]) 
+                subset[i][j] = subset[i - 1][j] 
+                               || subset[i - 1][j - set[i - 1]]; 
+        } 
+    } 
+    return subset[n][sum]; 
+} 	
+
+156)Rod Cutting
+----------------------------------------------------
+TC:O(n^2)	SC:O(n)
+int rodCut(int price[], int n)
+{
+	// T[i] stores maximum profit achieved from rod of length i
+	int T[n + 1];
+
+	// initialize maximum profit to 0
+	for (int i = 0; i <= n; i++)
+		T[i] = 0;
+
+	// consider rod of length i
+	for (int i = 1; i <= n; i++)
+	{
+		// divide the rod of length i into two rods of length j
+		// and i-j each and take maximum
+		for (int j = 1; j <= i; j++)
+			T[i] = max(T[i], price[j - 1] + T[i - j]);
+	}
+
+	// T[n] stores maximum profit achieved from rod of length n
+	return T[n];
+}
+157)Egg Dropping
+------------------------------------------------------------
+TC = >O(total floors * total eggs ) * O(total floors)//inner most loop
+   => o(total floors ^2 *total eggs)
+SC:O(totalFloors*totalEggs) 
+
+    public int calculate(int eggs, int floors){
+        
+        int T[][] = new int[eggs+1][floors+1];
+        int c =0;
+        for(int i=0; i <= floors; i++){
+            T[1][i] = i;
+        }
+        
+        for(int e = 2; e <= eggs; e++){
+            for(int f = 1; f <=floors; f++){
+                T[e][f] = Integer.MAX_VALUE;
+                for(int k = 1; k <=f ; k++){
+                    c = 1 + Math.max(T[e-1][k-1], T[e][f-k]);
+                    if(c < T[e][f]){
+                        T[e][f] = c;
+                    }
+                }
+            }
+        }
+        return T[eggs][floors];
+    }
+158)Word break
+------------------------------------------
+TC:O(n^4)//including finding the substring
+SC:O(n^2)
+ /**
+     * Dynamic programming version for breaking word problem.
+     * It returns null string if string cannot be broken into multipe words
+     * such that each word is in dictionary.
+     * Gives preference to longer words over splits
+     * e.g peanutbutter with dict{pea nut butter peanut} it would result in
+     * peanut butter instead of pea nut butter.
+     */
+    public String breakWordDP(String word, Set<String> dict){
+        int T[][] = new int[word.length()][word.length()];
+        
+        for(int i=0; i < T.length; i++){
+            for(int j=0; j < T[i].length ; j++){
+                T[i][j] = -1; //-1 indicates string between i to j cannot be split
+            }
+        }
+        
+        //fill up the matrix in bottom up manner
+        for(int l = 1; l <= word.length(); l++){
+            for(int i=0; i < word.length() -l + 1 ; i++){
+                int j = i + l-1;
+                String str = word.substring(i,j+1);
+                //if string between i to j is in dictionary T[i][j] is true
+                if(dict.contains(str)){
+                    T[i][j] = i;
+                    continue;
+                }
+                //find a k between i+1 to j such that T[i][k-1] && T[k][j] are both true 
+                for(int k=i+1; k <= j; k++){
+                    if(T[i][k-1] != -1 && T[k][j] != -1){
+                        T[i][j] = k;
+                        break;
+                    }
+                }
+            }
+        }
+        if(T[0][word.length()-1] == -1){
+            return null;
+        }
+        
+        //create space separate word from string is possible
+        StringBuffer buffer = new StringBuffer();
+        int i = 0; int j = word.length() -1;
+        while(i < j){
+            int k = T[i][j];
+            if(i == k){
+                buffer.append(word.substring(i, j+1));
+                break;
+            }
+            buffer.append(word.substring(i,k) + " ");
+            i = k;
+        }
+        
+        return buffer.toString();
+    }
+-----------------------------------------------
+TC:O(n*s) //if finding the string cost o(n) then O(n^2*s)  // if hash map used to find the substring then find operation takes O(1)
+/*The time complexity of the algorithm is O(n * s) where s is the length of the largest string in the dictionary and n is the length of the given string.
+As we run the loop only once, which takes O(n) time and each time we match it with the dictionary word which can have a length <=s so overall time taken by the program is O(n * s).*/
+SC:O(n+1)
+
+public class Solution {
+    public boolean wordBreak(String s, Set<String> wordDict) {
+        if(s.length() == 0) return false;
+        boolean[] breakable = new boolean[s.length() + 1];
+        breakable[0] = true;
+        for(int i = 1; i <= s.length(); i++){
+            for(int j = 0; j < i; j++){
+                if(breakable[j] && wordDict.contains(s.substring(j, i))){
+                    breakable[i] = true;
+                    break;
+                }
+            }
+        }
+        //for(boolean b : breakable) System.out.print(b + ", ");
+        return breakable[s.length()];
+    }
+}
+
+
+159)Palindrome partitioning
+-------------------------------
+TC:O(n^2)	SC:O(n^2)
+public static int partition(String s) {
+		  int n = s.length();
+		  boolean palindrome[][] = new boolean[n][n]; //boolean table
+		  
+		  //Trivial case: single letter palindromes
+		  for (int i = 0; i < n; i++) {
+			  palindrome[i][i] = true;
+		  }
+		  
+		  //Finding palindromes of two characters.
+		  for (int i = 0; i < n-1; i++) {
+		    if (s.charAt(i) == s.charAt(i+1)) {
+		      palindrome[i][i+1] = true;
+		    }
+		  }
+		  
+		  //Finding palindromes of length 3 to n
+		  for (int curr_len = 3; curr_len <= n; curr_len++) {
+		    for (int i = 0; i < n-curr_len+1; i++) {
+		      int j = i+curr_len-1;
+		      if (s.charAt(i) == s.charAt(j) //1. The first and last characters should match 
+		    	  && palindrome[i+1][j-1]) //2. Rest of the substring should be a palindrome
+		      {
+		    	palindrome[i][j] = true; 
+		      }
+		    }
+		  }
+		  
+		  int[] cuts = new int[n];
+		  for(int i=0; i<n; i++)
+		  {
+			  int temp = Integer.MAX_VALUE;
+			  if(palindrome[0][i])
+				  cuts[i] = 0;
+			  else
+			  {
+				  for(int j=0; j<i; j++)
+				  {
+					 if((palindrome[j+1][i]) && temp > cuts[j] + 1) 
+					 {
+						 temp = cuts[j] + 1;
+					 }
+				  }
+				  cuts[i] = temp;
+			  }			  
+		  }
+		  return cuts[n-1];
+		}
+ 
